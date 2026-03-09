@@ -1,0 +1,360 @@
+STOXIFY
+Distribusi Fitur Per Tier
+Lite • Growth • Apex
+
+Lite: Rp 220.000/bln  •  Growth: Rp 550.000/bln  •  Apex: Rp 885.000/bln
+Free Trial 3 Hari • Akses Apex • Tanpa Kartu Kredit
+ 
+🔵 LITE
+Rp 220.000 / bulan
+"Cukup untuk mulai investasi dengan cerdas"
+
+Semua fitur berikut tersedia di tier Lite:
+▸ AUTH & AKUN
+#	Fitur	Fungsi
+6	Register Email + WA	Daftar dengan nama, email, nomor WhatsApp, dan password.
+7	OTP WhatsApp (Fonnte)	Kode verifikasi dikirim ke WA saat register.
+8	Login Email + Password	Masuk dengan email dan password terdaftar.
+9	Google OAuth	Login/register cepat pakai akun Google.
+10	JWT + Refresh Token	Access token 15 menit, refresh token 24 jam.
+11	Profile Completion	Lengkapi risk profile, foto, mata uang, bahasa.
+12	Email Verification	Verifikasi email via link dari Resend.
+13	Completion Incentive	Profil 100% = unlock fitur tambahan.
+14	Consent ToS	Modal Terms of Service wajib saat registrasi.
+
+▸ PLATFORM
+#	Fitur	Fungsi
+1	Landing Page	Website publik stoxify.com — fitur, harga, CTA.
+2	Multi-bahasa (ID & EN)	Toggle bahasa Indonesia dan English.
+3	Dark Mode	Tampilan gelap navy default.
+4	Light Mode	Tampilan terang untuk preferensi siang hari.
+5	Multi-device Sync	Akses web dan mobile, data sinkron otomatis.
+
+▸ SUBSCRIPTION
+#	Fitur	Fungsi
+26	Free Trial 3 Hari	Akses semua fitur Apex selama 3 hari gratis, tanpa kartu kredit.
+27	Auto Downgrade Setelah Trial	Trial habis → otomatis turun ke Lite.
+28	Reminder H-2 Trial	Email otomatis 2 hari sebelum trial habis.
+23	Billing Bulanan	Bayar per bulan, cancel kapan saja. Tidak ada refund.
+24	Billing Tahunan	Bayar setahun di muka, hemat 20%.
+25	Payment Midtrans	Transfer bank, QRIS, GoPay, OVO, ShopeePay, kartu kredit.
+
+▸ DATA MARKET
+#	Fitur	Fungsi
+29	Saham IDX (15 menit delay)	Data harga saham Bursa Efek Indonesia dengan delay 15 menit.
+30	Saham Global (15 menit delay)	Data saham US dan global dengan delay 15 menit.
+31	Crypto (15 menit delay)	Data harga crypto dari Binance dengan delay 15 menit.
+32	Crypto Metadata	Market cap, volume, deskripsi aset crypto dari CoinGecko.
+
+▸ HOT NEWS ENGINE (FULL)
+#	Fitur	Fungsi
+37	RSS Scraper Berita Lokal	Otomatis ambil berita dari Kontan, Bisnis.com, CNBC ID, Detik Finance, IDX Channel.
+38	RSS Scraper Berita Global	Reuters, Bloomberg, CNBC, CoinDesk, CoinTelegraph.
+39	RSS Scraper Regulator	OJK, Bank Indonesia, IDX announcement, KSEI.
+40	Hot Score Calculator	Setiap berita dapat skor 0-100 berdasarkan 6 faktor.
+41	Kategori BREAKING	Berita baru < 30 menit dengan dampak tinggi.
+42	Kategori HOT	Berita dengan Hot Score di atas 80.
+43	Kategori MARKET MOVE	Berita yang terbukti menggerakkan harga secara signifikan.
+44	Kategori FLASH	Update cepat dari berita yang masih berkembang.
+45	Kategori GLOBAL	Berita luar negeri yang berdampak ke pasar Indonesia.
+46	Kategori EARNINGS	Laporan keuangan perusahaan.
+47	Kategori REGULASI	Kebijakan OJK, BI, atau pemerintah.
+48	Kategori WHALE	Pergerakan big player dan institusi.
+49	News Impact Tracker	Track dampak berita ke harga: T+0, T+15m, T+1h, T+1d.
+50	Breaking News Alert	Notif ke user yang punya aset terdampak di portfolio/watchlist.
+51	AI News Summary	Groq generate ringkasan berita hot update setiap 30 menit.
+52	News vs Price Chart	Pin lokasi berita di chart harga.
+53	Hot Topics Feed	Topik terpanas hari ini — per topik bukan per artikel.
+54	Personalized Hot News	Filter berita sesuai aset di portfolio dan watchlist.
+
+▸ DASHBOARD
+#	Fitur	Fungsi
+77	Portfolio Value Widget	Total nilai portfolio + P&L hari ini.
+78	Market Overview Widget	IHSG, S&P 500, Bitcoin, USD/IDR dalam satu kartu.
+79	Watchlist Widget	Snapshot watchlist dengan harga terkini.
+80	Hot News Widget	5 berita terpanas langsung di dashboard.
+82	Fear & Greed Index	Indikator psikologi pasar 0-100.
+84	Top Mover Widget	Top Gainer, Loser, Most Active hari ini.
+85	Morning Brief	Ringkasan kondisi pasar terkirim jam 08.00 setiap hari.
+
+▸ ASSET DETAIL
+#	Fitur	Fungsi
+86	Chart Interaktif	TradingView Lightweight Charts semua timeframe.
+87	Jenis Chart	Candlestick, line, atau bar.
+88	Technical Indicators	MA, EMA, RSI, MACD, Bollinger Bands, Volume, Stochastic.
+89	Fundamental Data	Market Cap, PE, PBV, ROE, EPS, Dividend Yield, Revenue Growth.
+93	Hot News Terkait	Semua berita yang menyebut aset ini dengan sentiment badge.
+95	Broker Redirect Buttons	Tombol langsung buka broker pilihan dari halaman aset.
+97	Watchlist & Alert Shortcut	Tambah watchlist atau buat alert langsung dari halaman aset.
+
+▸ WATCHLIST
+#	Fitur	Fungsi
+98	Buat & Kelola Watchlist	Simpan daftar aset yang ingin dipantau.
+99	Limit 10 Aset	Maksimal 10 aset di watchlist untuk tier Lite.
+101	Alert dari Watchlist	Set alert harga langsung dari daftar watchlist.
+
+▸ PORTFOLIO TRACKER
+#	Fitur	Fungsi
+103	Input Holding Manual	Catat aset, lot, harga beli, tanggal beli.
+104	P&L Realtime	Hitung untung/rugi realtime berdasarkan harga terkini.
+105	Return Calculation	Return harian, mingguan, bulanan, all-time.
+106	Benchmark vs IHSG	Bandingkan return portfolio vs IHSG.
+108	Asset Allocation Chart	Pie chart alokasi per aset, sektor, market.
+110	1 Portfolio	Tier Lite hanya bisa buat 1 portfolio.
+
+▸ SCREENER
+#	Fitur	Fungsi
+111	Filter Basic Preset	Filter bawaan: PE, volume, market cap, sektor.
+115	IPO Tracker	Jadwal IPO mendatang + analisis AI prospek listing.
+
+▸ ALERTS
+#	Fitur	Fungsi
+118	Price Alert	Notify kalau harga naik/turun melewati threshold.
+122	Hot News Alert	Notify kalau ada berita hot tentang aset yang dipantau.
+125	Limit 10 Alert	Maksimal 10 alert aktif untuk tier Lite.
+
+▸ BROKER INTEGRATION
+#	Fitur	Fungsi
+126	Broker Redirect	Buka Ajaib, Stockbit, IPOT, Pluang, Pintu, Bibit langsung dari Stoxify.
+127	Affiliate Tag Otomatis	Kode affiliate Stoxify otomatis di setiap redirect.
+
+▸ CHAT AI
+#	Fitur	Fungsi
+213	Chat AI (500 token/hari)	Groq AI chatbot 24/7. Paham portfolio dan kondisi pasar user. Limit 500 token per hari (~5-10 pertanyaan).
+214	Streaming Response	Jawaban muncul karakter per karakter, terasa natural.
+219	History Percakapan	Semua riwayat chat tersimpan permanen.
+
+▸ NOTIFIKASI
+#	Fitur	Fungsi
+221	Email via Resend	Notifikasi via email — OTP, alert, receipt, laporan.
+224	Morning Brief Harian	Ringkasan pasar terkirim jam 08.00 setiap hari via email.
+
+▸ COMMUNITY & EDUCATION
+#	Fitur	Fungsi
+196	Community Feed (Baca)	Baca semua post dan diskusi di feed community.
+202	Post 5x/hari	Bisa post maksimal 5 kali per hari di community.
+203	Diskusi Per Aset	Ikut diskusi di thread komunitas per aset.
+209	Artikel Investasi	Panduan konsep investasi: RSI, candlestick, DCA, dll.
+210	Tutorial Fitur Stoxify	Panduan cara pakai setiap fitur Stoxify.
+211	Konten Strategi	Artikel strategi: value investing, momentum trading, dll.
+
+▸ CONSENT
+#	Fitur	Fungsi
+14	Consent ToS	Wajib setujui Terms of Service saat registrasi.
+15	Consent AI Features	Disclaimer wajib saat pertama akses fitur AI.
+18	Consent Audit Log	Bukti klik tersimpan: timestamp, IP, device, SHA-256 hash.
+
+ 
+🟢 GROWTH
+Rp 550.000 / bulan
+"Untuk investor aktif yang mau keputusan lebih tajam"
+
+✅ Semua fitur Lite + fitur tambahan berikut:
+▸ DATA MARKET (UPGRADE)
+#	Fitur	Fungsi
+29	Saham IDX Realtime	Data saham IDX tanpa delay — harga langsung dari cache Redis.
+30	Saham Global Realtime	Data saham global tanpa delay.
+31	Crypto Realtime	Data crypto Binance tanpa delay.
+33	Redis Cache Priority	Data diprioritaskan dari cache — lebih cepat dari Lite.
+
+▸ SENTIMENT ANALYSIS (FULL)
+#	Fitur	Fungsi
+55	FinBERT (English)	Analisis sentimen berita Bahasa Inggris via model NLP finansial.
+56	IndoBERT (Indonesia)	Analisis sentimen berita Bahasa Indonesia.
+57	Google Trends	Pantau seberapa banyak orang search aset di Google.
+58	GDELT Integration	Topik viral di media global per aset.
+59	Volume Anomaly Detection	Volume hari ini vs rata-rata 30 hari — lonjakan = sinyal.
+60	CoinGecko Social Buzz	Twitter mentions dan Reddit posts untuk crypto.
+61	Data Internal Stoxify	Berapa user Stoxify pantau, set alert, atau tanya AI soal aset ini.
+64	Sentiment Aggregation Engine	7 sumber digabung dengan bobot jadi 1 skor akhir.
+65	Overall Sentiment Score	Skor 0-100 per aset dengan label BULLISH/NEUTRAL/BEARISH.
+66	Sentiment Heatmap	Visual semua aset sekaligus: hijau bullish, merah bearish.
+67	Sentiment Ranking	Top Bullish dan Top Bearish hari ini.
+68	Sentiment History Chart	Grafik perubahan sentiment 30/90/180 hari.
+69	Sentiment vs Price Chart	Chart gabungan sentiment + harga — lihat korelasi.
+70	Sentiment Alert	Notify kalau sentiment score berubah melewati threshold.
+71	Sector Sentiment	Aggregate sentiment per sektor industri.
+72	Global vs Local Sentiment	Breakdown sentiment lokal vs global per aset.
+74	AI Sentiment Summary	Groq generate penjelasan sentiment dalam bahasa natural.
+75	News Sentiment Feed	Setiap artikel tampil dengan badge sentimen + confidence.
+
+▸ AI SCORE
+#	Fitur	Fungsi
+128	AI Score 0-100	Skor komprehensif per aset gabungan ML + sentiment + teknikal + fundamental. Update 15 menit.
+129	Sinyal STRONG BUY	Skor 80+ — semua indikator align positif.
+130	Sinyal BUY	Skor 65-79 — mayoritas indikator positif.
+131	Sinyal NEUTRAL	Skor 45-64 — sinyal mixed, belum ada arah jelas.
+132	Sinyal SELL	Skor 30-44 — mayoritas indikator negatif.
+133	Sinyal STRONG SELL	Skor < 30 — semua indikator negatif.
+134	Score Breakdown	Lihat kontribusi ML, sentiment, teknikal, fundamental per aset.
+135	Gold Badge 90+	Aset dengan AI Score 90+ dapat badge gold.
+
+▸ ML PREDICTIONS
+#	Fitur	Fungsi
+136	LSTM Prediction	Neural network untuk pattern jangka pendek — arah + confidence.
+137	Prophet Prediction	Trend & seasonality — target harga N hari ke depan.
+138	XGBoost Ensemble	Klasifikasi UP/DOWN dengan probabilitas naik.
+139	Pattern: Head & Shoulders	Deteksi pola pembalikan tren.
+140	Pattern: Double Top/Bottom	Deteksi pola reversal di level tertentu.
+141	Pattern: Golden Cross	MA50 memotong MA200 ke atas — sinyal bullish.
+142	Pattern: Cup & Handle	Pola kontinuasi bullish sebelum breakout.
+143	Pattern: Flag & Triangle	Pola konsolidasi sebelum breakout.
+144	Anomaly Detection	Isolation Forest deteksi pergerakan tidak wajar.
+
+▸ ASSET DETAIL (UPGRADE)
+#	Fitur	Fungsi
+90	ML Predictions Display	Output 3 model ML: arah, target harga, confidence, timeframe.
+91	AI Score per Aset	Skor 0-100 dengan sinyal STRONG BUY sampai STRONG SELL.
+92	Full Sentiment Breakdown	Detail sentiment semua 7 sumber + history + correlation chart.
+94	Key Catalyst	AI list faktor positif dan risiko yang perlu diwaspadai.
+
+▸ WATCHLIST (UPGRADE)
+#	Fitur	Fungsi
+99	Limit 30 Aset	Maksimal 30 aset di watchlist untuk tier Growth.
+100	Sentiment Badge Watchlist	Setiap aset di watchlist tampil badge bullish/neutral/bearish.
+102	Watchlist AI Recommendation	AI suggest aset cocok ditambahkan berdasarkan profil user.
+
+▸ PORTFOLIO (UPGRADE)
+#	Fitur	Fungsi
+107	Risk Metrics	Sharpe Ratio, volatilitas, max drawdown, Value at Risk (VaR).
+109	Dividend Tracker	Catat penerimaan dividen dan proyeksikan pendapatan masa depan.
+110	3 Portfolio	Bisa buat 3 portfolio berbeda untuk Growth.
+
+▸ SCREENER (UPGRADE)
+#	Fitur	Fungsi
+112	Custom Filter	Buat kombinasi filter sendiri — PE < 15 DAN ROE > 20% dll.
+113	Simpan Custom Filter	Filter yang dibuat bisa disimpan dan dipakai kapanpun.
+114	AI Score di Screener	Lihat AI Score langsung di hasil screener.
+116	Filter by ML Signal	Filter aset yang ML prediksi UP/DOWN/NEUTRAL.
+117	Filter by Sentiment	Tampilkan hanya aset dengan sentiment score di atas threshold.
+
+▸ ALERTS (UPGRADE)
+#	Fitur	Fungsi
+119	AI Score Alert	Notify kalau AI Score berubah signifikan.
+120	Sentiment Alert	Notify kalau sentiment score berubah drastis.
+121	Volume Anomaly Alert	Notify kalau volume melonjak jauh di atas rata-rata.
+123	Earnings Calendar Alert	Remind sebelum jadwal rilis laporan keuangan.
+124	Portfolio Value Alert	Notify kalau total portfolio naik/turun melewati % tertentu.
+125	Limit 30 Alert	Maksimal 30 alert aktif untuk tier Growth.
+
+▸ PAPER TRADING
+#	Fitur	Fungsi
+192	Paper Trading	Trade simulasi semua aset dengan modal virtual.
+193	3 Simulasi	Bisa buat 3 simulasi berbeda untuk Growth.
+194	Portfolio Simulasi	Track P&L virtual, return, dan alokasi simulasi.
+195	Simulasi vs Real	Bandingkan performa strategi simulasi dengan portfolio real.
+
+▸ CHAT AI (UPGRADE)
+#	Fitur	Fungsi
+213	Chat AI (2.000 token/hari)	Limit naik ke 2.000 token per hari (~20-40 pertanyaan).
+
+▸ NOTIFIKASI (UPGRADE)
+#	Fitur	Fungsi
+222	Push Notification FCM	Notif langsung muncul di HP via Firebase — Android & iOS.
+
+▸ COMMUNITY (UPGRADE)
+#	Fitur	Fungsi
+202	Post 20x/hari	Bisa post maksimal 20 kali per hari di community.
+
+▸ CONSENT
+#	Fitur	Fungsi
+15	Consent AI Features	Disclaimer wajib saat pertama akses fitur AI.
+16	Consent Rekomendasi	Disclaimer wajib saat pertama buka halaman Rekomendasi.
+
+ 
+⚡ APEX
+Rp 885.000 / bulan
+"Untuk trader serius dan power user"
+
+✅ Semua fitur Lite + Growth + fitur eksklusif berikut:
+▸ SMART RECOMMENDATION ENGINE
+#	Fitur	Fungsi
+147	AI Pick of the Day	Setiap pagi jam 08.00: 1 saham + 1 crypto terbaik hari ini.
+148	Personalized For You	Rekomendasi sesuai risk profile, budget, portfolio existing user.
+149	Breakout Alert	Scan realtime — aset yang baru break resistance dengan volume tinggi.
+150	Undervalued Gems	Saham fundamental bagus tapi harga masih murah.
+151	Momentum Play	Aset dengan momentum teknikal kuat: RSI ideal, MACD bullish.
+152	Reversal Signal	Aset yang sudah turun terlalu jauh dan berpotensi rebound.
+153	Smart Money Following	Aset yang sedang diakumulasi institusi dan foreign investor.
+154	Dividend Play	Saham dividend yield tinggi dan ex-date dekat.
+155	Portfolio Optimizer	Saran rebalancing + proyeksi Sharpe Ratio.
+156	Scenario Planner	'Kalau Fed cut rate, saham apa yang untung?' — AI analisis.
+157	Halaman Analisis Rekomendasi	Tiap rekomendasi ada detail: target, stop loss, R/R, catalyst.
+158	Accuracy Tracking	Track win rate dan statistik per rekomendasi AI.
+81	AI Pick of the Day Widget	Rekomendasi terbaik AI muncul di dashboard setiap pagi.
+
+▸ INTRADAY INTELLIGENCE SUITE
+#	Fitur	Fungsi
+160	Pre-Market Brief — Global	Kondisi semalam: Wall Street, Nikkei, USD/IDR.
+161	Pre-Market Brief — Top 5	5 saham terbaik untuk ditrade hari ini + alasan.
+162	Pre-Market Brief — Hindari	Daftar aset yang sebaiknya dihindari hari ini.
+163	Pre-Market Brief — Kondisi	Bias BULLISH/BEARISH hari ini + strategi terbaik.
+164	Intraday Signal — Entry	Range harga entry berdasarkan level support dan momentum.
+165	Intraday Signal — Target	Target 1 (konservatif) dan Target 2 (optimal).
+166	Intraday Signal — Stop Loss	Level stop loss untuk batasi kerugian.
+167	Intraday Signal — Alasan	Penjelasan kenapa sinyal ini muncul.
+168	Intraday Signal — Validitas	Sinyal punya waktu kedaluwarsa — berlaku sampai jam X.
+169	Market Radar — Live Table	Dashboard realtime semua aset pantauan, update tiap detik.
+170	Market Radar — Market Flow	Foreign net buy/sell dan indikasi akumulasi/distribusi institusi.
+171	AI Trade Planner — Lot	Input modal → AI hitung lot optimal berdasarkan manajemen risiko.
+172	AI Trade Planner — R/R Ratio	Hitung Risk/Reward ratio — idealnya minimal 1:2.
+173	AI Trade Planner — Fee	Estimasi fee broker dan pajak untuk hitung profit bersih.
+174	AI Trade Planner — Risk	Max loss sebagai % dari modal — warning kalau terlalu besar.
+175	Trading Journal Auto	Setiap trade otomatis tercatat: entry, exit, lot, P&L, waktu.
+176	Trading Journal AI Insight	Bulanan: win rate per aset, jam terbaik, pola yang perlu diperbaiki.
+177	Consent Renewal 30 Hari	Disclaimer risiko trading harian wajib disetujui ulang tiap 30 hari.
+
+▸ INSTITUTIONAL DATA
+#	Fitur	Fungsi
+62	On-Chain: Whale Movement	Data Glassnode — pergerakan wallet whale sebagai indikator arah crypto.
+63	On-Chain: Exchange Flow	Crypto inflow/outflow dari exchange — inflow besar = potensi jual.
+73	Smart Money Sentiment	Institusi dan whale sedang akumulasi atau distribusi aset ini?
+179	Smart Money Flow Detail	Foreign net buy/sell breakdown per broker — lihat dari broker mana institusi masuk.
+180	Insider Transaction Tracking	Transaksi direksi dan komisaris dari data IDX — sinyal kuat kalau mereka beli saham sendiri.
+181	Dark Pool Activity	Indikasi transaksi besar di luar bursa resmi — big player sering masuk sini sebelum harga bergerak.
+
+▸ FITUR EKSKLUSIF APEX
+#	Fitur	Fungsi
+178	Personalized AI Model	AI yang belajar dari kebiasaan spesifik user — makin lama pakai makin personal.
+182	Custom Automation Rules	'Kalau BBCA turun 2% + volume 3x → kirim WA alert + generate trade plan'.
+183	Professional Report PDF per Aset	Laporan PDF profesional per aset: analisis, chart, prediksi, rekomendasi.
+184	Professional Report PDF per Portfolio	Laporan PDF seluruh portfolio: performa, risk metrics, proyeksi.
+185	API Access	Akses data Stoxify via REST API untuk integrasi eksternal.
+186	Priority Data Feed	Data harga diprioritaskan untuk Apex — paling cepat di server.
+187	Multi-device (5)	Login dari hingga 5 perangkat secara bersamaan.
+190	Monthly Performance Report	PDF laporan performa bulanan otomatis dikirim setiap akhir bulan.
+191	Badge ⚡ Apex di Community	Badge eksklusif di profil Community sebagai user premium tertinggi.
+
+▸ WATCHLIST & PORTFOLIO (UPGRADE)
+#	Fitur	Fungsi
+99	Watchlist Unlimited	Pantau aset sebanyak apapun tanpa batas.
+110	Portfolio Unlimited	Buat portfolio sebanyak apapun tanpa batas.
+193	Paper Trading Unlimited	Simulasi tanpa batas — simulasi dan transaksi unlimited.
+
+▸ ALERTS (UPGRADE)
+#	Fitur	Fungsi
+125	Alert Unlimited	Set alert sebanyak apapun tanpa batas untuk Apex.
+
+▸ CHAT AI & SUPPORT (UPGRADE)
+#	Fitur	Fungsi
+213	Chat AI Unlimited Token	Tidak ada batas token per hari — tanya AI sesering apapun.
+215	CS Manusia (Jam Kerja)	Staff CS tersedia jam 08.00-17.00 WIB untuk masalah yang butuh manusia.
+216	Eskalasi Otomatis ke CS	AI deteksi topik billing/refund/bug → otomatis masuk antrian CS.
+217	CS Queue Realtime	Staff CS ambil chat dan balas langsung via WebSocket.
+188	Dedicated Account Manager	CS khusus Apex, response < 1 jam, bisa dihubungi via WA.
+189	Early Access Fitur Baru	Apex test fitur baru sebelum tier lain.
+
+▸ NOTIFIKASI (UPGRADE)
+#	Fitur	Fungsi
+223	WhatsApp via Fonnte	Notif penting dikirim ke WhatsApp — lebih personal dan langsung terbaca.
+
+▸ COMMUNITY (UPGRADE)
+#	Fitur	Fungsi
+202	Post Unlimited	Post di community tanpa batas per hari.
+
+▸ CONSENT
+#	Fitur	Fungsi
+16	Consent Rekomendasi	Disclaimer wajib saat pertama buka halaman Rekomendasi.
+17	Consent Trading Harian	Disclaimer khusus intraday, renewal wajib setiap 30 hari.
+
+STOXIFY — Confidential  |  Muhammad Fahmi & Nasywa Alya Kamila © 2025
