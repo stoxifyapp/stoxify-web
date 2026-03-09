@@ -1,0 +1,2117 @@
+
+
+
+STOXIFY
+Shape Up — Pitch Semua Siklus (0–8)
+"The market, simplified."
+Fahmi (Backend/ML)  ×  Nasywa (Frontend/Mobile)
+ATURAN SHAPE UP STOXIFY
+Tidak ada coding sebelum Pitch diapprove KEDUA co-founder.
+Appetite adalah batas keras — bukan estimasi.
+Ide baru saat build berlangsung? Masuk Backlog.
+
+
+RINGKASAN SIKLUS
+Siklus	Nama	Appetite	Fokus
+Siklus 0	Setup & Infrastructure	Small Batch	Setup/Infra
+Siklus 1	Auth + Payment + Landing Page	Big Batch	Build cycle
+Siklus 2	Data Pipeline + Hot News + Sentiment	Big Batch	Build cycle
+Siklus 3	Core User Features — MVP Beta	Big Batch	Build cycle
+Siklus 4	ML Service — AI Score + Predictions	Big Batch	Build cycle
+Siklus 5	Intraday Suite + Smart Recommendations (Apex)	Big Batch	Build cycle
+Siklus 6	Chat Support + Community + Notifikasi	Big Batch	Build cycle
+Siklus 7	Admin Dashboard + Marketing AI Suite	Big Batch	Build cycle
+Siklus 8	Polish + Security Audit + Launch	Big Batch	Build cycle
+ 
+SIKLUS 0
+Setup & Infrastructure
+Small Batch — 1 minggu
+Field	Value
+Appetite	Small Batch — 1 minggu
+Mulai	[DD/MM/YYYY]
+Target Selesai	[DD/MM/YYYY]
+Jeda Setelah Siklus	3 hari
+
+1. PROBLEM
+ℹ  Belum ada infrastruktur apapun — repo kosong, belum ada database, belum ada deployment pipeline. Tim tidak bisa mulai coding fitur sebelum fondasi ini beres.
+
+2. SOLUTION
+Setup semua infrastruktur dasar: repo GitHub, Railway untuk backend, Supabase untuk PostgreSQL+TimescaleDB, Redis Cloud untuk cache, Vercel untuk frontend, dan CI/CD pipeline. Tidak ada fitur user-facing di siklus ini — murni fondasi teknis.
+3. ALUR
+Flow
+User Journey: Tidak ada — siklus ini murni infrastruktur
+
+Milestone:
+  1. Repo dibuat + CLAUDE.md ada di setiap repo
+  2. FastAPI backend jalan di Railway (GET /health = 200)
+  3. Supabase terhubung + TimescaleDB extension aktif
+  4. Redis Cloud terhubung
+  5. Next.js frontend deploy di Vercel
+  6. GitHub Actions: lint + test jalan di setiap PR
+
+4. IN SCOPE
+💡  Ini yang PASTI dikerjakan siklus ini. Tidak ada coding sebelum Pitch diapprove.
+
+Fahmi — Backend & ML
+Deliverable	PIC	Status
+Buat 3 repo GitHub: stoxify-backend, stoxify-ml, stoxify-web	Fahmi	⬜ Todo
+Setup Railway project untuk stoxify-backend	Fahmi	⬜ Todo
+Setup Supabase: PostgreSQL + enable TimescaleDB extension	Fahmi	⬜ Todo
+Setup Redis Cloud instance (free tier untuk dev)	Fahmi	⬜ Todo
+Buat struktur folder backend: app/modules/, app/core/, app/api/	Fahmi	⬜ Todo
+Setup Alembic untuk database migration	Fahmi	⬜ Todo
+Setup pytest untuk unit test	Fahmi	⬜ Todo
+Buat CLAUDE.md di stoxify-backend (dari stoxify-context.md)	Fahmi	⬜ Todo
+Buat API_CONTRACT.md di stoxify-backend	Fahmi	⬜ Todo
+Setup GitHub Actions: lint (ruff) + test (pytest) on PR	Fahmi	⬜ Todo
+Setup environment variables: dev, staging, production	Fahmi	⬜ Todo
+Buat Makefile: make dev, make test, make migrate	Fahmi	⬜ Todo
+Setup Sentry untuk error monitoring	Fahmi	⬜ Todo
+
+Nasywa — Frontend & Mobile
+Deliverable	PIC	Status
+Setup Next.js project dengan App Router + TypeScript	Nasywa	⬜ Todo
+Setup Tailwind CSS + custom config brand Stoxify	Nasywa	⬜ Todo
+Setup Vercel project untuk stoxify-web	Nasywa	⬜ Todo
+Buat struktur folder: app/, components/, lib/, styles/	Nasywa	⬜ Todo
+Import font Syne + DM Mono via next/font	Nasywa	⬜ Todo
+Setup ESLint + Prettier	Nasywa	⬜ Todo
+Buat CLAUDE.md di stoxify-web	Nasywa	⬜ Todo
+Buat komponen dasar: Button, Input, Card, Badge (sesuai brand)	Nasywa	⬜ Todo
+Buat halaman placeholder: /, /login, /register, /dashboard	Nasywa	⬜ Todo
+Setup GitHub Actions: lint on PR	Nasywa	⬜ Todo
+
+5. OUT OF SCOPE
+⚠  Yang SENGAJA tidak dikerjakan siklus ini. Sudah ada di Backlog.
+•	Fitur apapun yang user-facing (auth, dashboard, dll) — itu Siklus 1+
+•	Mobile Flutter — post-launch
+•	ML service (stoxify-ml) — Siklus 4
+•	Production domain dan SSL — Siklus 8
+
+6. RABBIT HOLES
+⚠  Jebakan yang bisa menghabiskan waktu. Hindari!
+•	Over-engineering folder structure — ikuti yang sudah ada di CLAUDE.md
+•	CI/CD yang terlalu kompleks — cukup lint + test, tidak perlu auto-deploy dulu
+•	Evaluasi ulang tech stack — sudah locked di CLAUDE.md, jangan diutak-atik
+
+7. NO-GOS
+❌  Hal yang sudah disepakati TIDAK akan dilakukan.
+•	Tidak akan ganti tech stack dari yang sudah di-lock
+•	Tidak akan skip Alembic setup
+•	Tidak akan commit credential atau API key ke repo
+
+8. API CONTRACT
+💡  Kontrak Fahmi <-> Nasywa. Nasywa bisa langsung mock dari sini.
+
+GET /health — Public, no auth (satu-satunya endpoint Siklus 0)
+json
+// Response 200
+{
+  "status": "healthy",
+  "version": "0.1.0",
+  "timestamp": "2026-03-07T09:00:00Z",
+  "services": {
+    "database": "connected",
+    "redis": "connected"
+  }
+}
+
+Frontend — Base API fetcher yang akan dipakai semua siklus (Nasywa setup di Siklus 0)
+json
+// src/lib/api.ts
+const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+
+export async function apiFetch<T>(path: string, opts?: RequestInit): Promise<T> {
+  const res = await fetch(BASE + path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', ...opts?.headers },
+    credentials: 'include',  // untuk httpOnly cookie refresh token
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err?.error?.message || "API error")
+  }
+  return res.json()
+}
+
+9. DATABASE SCHEMA / MIGRATION
+❌  Wajib buat Alembic migration dulu sebelum coding endpoint.
+python — Alembic
+# Siklus 0: Tidak ada tabel aplikasi
+# Yang perlu dikerjakan Fahmi:
+
+# 1. alembic init migrations
+# 2. Edit alembic.ini — set sqlalchemy.url ke Supabase connection string
+# 3. alembic current  -->  harusnya return "head"
+
+# 4. Enable di Supabase SQL Editor:
+# CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+# CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';
+# CREATE EXTENSION IF NOT EXISTS pg_trgm;  -- untuk full-text search nanti
+
+10. CONTOH KODE UTAMA
+Struktur Folder Backend (Fahmi)
+bash
+stoxify-backend/
+├── CLAUDE.md
+├── API_CONTRACT.md
+├── Makefile
+├── requirements.txt
+├── alembic.ini
+├── migrations/versions/
+└── app/
+    ├── main.py              # FastAPI app instance
+    ├── core/
+    │   ├── config.py        # Settings dari env vars
+    │   ├── database.py      # DB connection pool (asyncpg)
+    │   ├── security.py      # JWT helper
+    │   ├── redis.py         # Redis client
+    │   └── dependencies.py  # Shared FastAPI deps (get_current_user, dll)
+    ├── modules/
+    │   ├── auth/
+    │   ├── market/
+    │   ├── portfolio/
+    │   ├── news/
+    │   └── ...              # satu folder per domain
+    └── api/v1/router.py     # Gabung semua module router
+
+Tailwind Config Brand Stoxify (Nasywa)
+typescript
+// tailwind.config.ts
+import type { Config } from 'tailwindcss'
+const config: Config = {
+  content: ['./src/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        'stx-bg':      '#010206',
+        'stx-surface': '#03060F',
+        'stx-surface2':'#05091A',
+        'stx-primary': '#162444',
+        'stx-gold':    '#F0B429',
+        'stx-text':    '#FFFEF8',
+        'stx-success': '#4ADE80',
+        'stx-danger':  '#F87171',
+        'stx-warning': '#FB923C',
+        'stx-ai':      '#67E8F9',
+        'stx-ml':      '#C4B5FD',
+      },
+      fontFamily: { syne: ['Syne','sans-serif'], mono: ['DM Mono','monospace'] },
+      borderRadius: { stx: '8px' },
+    }
+  }
+}
+export default config
+
+11. DEFINITION OF DONE
+❌  Siklus dianggap SELESAI hanya kalau SEMUA checklist ini hijau.
+
+Deliverable	PIC	Status
+Semua repo bisa di-clone + run lokal	Keduanya	⬜ Todo
+GET /health return 200 di Railway staging	Fahmi	⬜ Todo
+Alembic terhubung ke Supabase, alembic current jalan	Fahmi	⬜ Todo
+TimescaleDB extension enabled	Fahmi	⬜ Todo
+Redis koneksi ke Redis Cloud berhasil	Fahmi	⬜ Todo
+Next.js jalan di localhost:3000, halaman placeholder tampil	Nasywa	⬜ Todo
+Tailwind brand colors bisa dipakai di komponen	Nasywa	⬜ Todo
+GitHub Actions jalan: PR trigger lint + test	Keduanya	⬜ Todo
+Vercel auto-deploy dari branch staging	Nasywa	⬜ Todo
+Tidak ada credential di repo	Keduanya	⬜ Todo
+
+12. CATATAN
+Siklus ini tidak ada fitur user-facing sama sekali. Kalau ada yang terasa kurang di setup, diskusi dulu — jangan langsung tambah tanpa sepakat.
+
+13. APPROVAL
+❌  KEDUA co-founder harus approve sebelum build dimulai.
+
+Co-founder	Status
+Fahmi (Backend/ML Leader)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+Nasywa (Frontend/Mobile)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+
+Catatan revisi (isi kalau rejected):
+Tulis catatan di sini...
+SIKLUS 1
+Auth + Payment + Landing Page
+Big Batch — 4 minggu
+Field	Value
+Appetite	Big Batch — 4 minggu
+Mulai	[DD/MM/YYYY]
+Target Selesai	[DD/MM/YYYY]
+Jeda Setelah Siklus	1 minggu
+
+1. PROBLEM
+ℹ  User belum bisa masuk ke Stoxify sama sekali. Tidak ada halaman login, register, atau pembayaran. Tanpa auth dan payment, tidak ada user, tidak ada revenue, tidak ada product.
+
+2. SOLUTION
+Build sistem auth lengkap (email+WA OTP, Google OAuth, JWT di httpOnly cookie), sistem subscription dengan Midtrans, sistem consent OJK-compliant, dan landing page publik. Setelah siklus ini selesai, user bisa daftar, login, mulai trial 3 hari Apex gratis, dan upgrade ke tier berbayar.
+3. ALUR
+Flow
+Register Flow:
+  Input email + WA + password
+  --> Kirim OTP ke WA (Fonnte) atau email (Resend)
+  --> Verify OTP --> Login otomatis
+  --> Tampil modal consent ToS (wajib accept)
+  --> /complete-profile --> /dashboard
+  (Trial Apex 3 hari aktif otomatis)
+
+Login Flow:
+  Input email + password
+  --> JWT access token (15 menit) di response
+  --> Refresh token di httpOnly cookie (24 jam)
+  --> Redirect ke /dashboard
+
+Upgrade Tier:
+  Klik Upgrade --> Pilih tier + billing cycle
+  --> Midtrans Snap popup --> Bayar
+  --> Webhook Midtrans --> Update subscription
+  --> Tier baru aktif
+
+4. IN SCOPE
+💡  Ini yang PASTI dikerjakan siklus ini. Tidak ada coding sebelum Pitch diapprove.
+
+Fahmi — Backend & ML
+Deliverable	PIC	Status
+Migration: users, refresh_tokens, otp_codes	Fahmi	⬜ Todo
+Migration: subscriptions, payments	Fahmi	⬜ Todo
+Migration: consent_versions, user_consents	Fahmi	⬜ Todo
+POST /auth/register — daftar + kirim OTP WA/email	Fahmi	⬜ Todo
+POST /auth/verify-otp — verifikasi OTP 6 digit	Fahmi	⬜ Todo
+POST /auth/login — email+password, return JWT	Fahmi	⬜ Todo
+POST /auth/login/google — Google OAuth	Fahmi	⬜ Todo
+POST /auth/refresh — refresh access token dari cookie	Fahmi	⬜ Todo
+POST /auth/logout — revoke refresh token	Fahmi	⬜ Todo
+POST /auth/forgot-password + /auth/reset-password	Fahmi	⬜ Todo
+POST /auth/resend-otp	Fahmi	⬜ Todo
+GET + PATCH /users/me	Fahmi	⬜ Todo
+POST /users/me/complete-profile	Fahmi	⬜ Todo
+GET /consents/pending + POST /consents/agree	Fahmi	⬜ Todo
+GET /subscriptions/plans — public endpoint	Fahmi	⬜ Todo
+POST /subscriptions/trial/start — aktifkan trial Apex 3 hari	Fahmi	⬜ Todo
+POST /subscriptions/checkout — generate Midtrans Snap token	Fahmi	⬜ Todo
+POST /subscriptions/webhook/midtrans	Fahmi	⬜ Todo
+GET /subscriptions/me + POST /subscriptions/cancel	Fahmi	⬜ Todo
+Integrasi Fonnte (WA OTP) + Resend (email OTP)	Fahmi	⬜ Todo
+Integrasi Midtrans Snap	Fahmi	⬜ Todo
+Rate limiting: max 5 req/menit endpoint auth	Fahmi	⬜ Todo
+Unit test module auth, coverage >= 70%	Fahmi	⬜ Todo
+
+Nasywa — Frontend & Mobile
+Deliverable	PIC	Status
+Landing page / — hero, fitur, pricing tabel, CTA	Nasywa	⬜ Todo
+Halaman /register + /login	Nasywa	⬜ Todo
+Halaman /verify-otp — input 6 digit + timer resend	Nasywa	⬜ Todo
+Halaman /forgot-password + /reset-password	Nasywa	⬜ Todo
+Halaman /complete-profile — preferensi investasi	Nasywa	⬜ Todo
+Modal Consent ToS — wajib accept sebelum lanjut	Nasywa	⬜ Todo
+Halaman /pricing — tabel Lite/Growth/Apex + CTA checkout	Nasywa	⬜ Todo
+Integrasi Midtrans Snap.js untuk checkout modal	Nasywa	⬜ Todo
+Halaman /dashboard (shell kosong, konten di Siklus 3)	Nasywa	⬜ Todo
+Auth guard middleware — redirect /login kalau belum auth	Nasywa	⬜ Todo
+Zustand store untuk user state (token di memory, refresh di cookie)	Nasywa	⬜ Todo
+Loading state + error state semua form	Nasywa	⬜ Todo
+Responsive mobile + desktop semua halaman	Nasywa	⬜ Todo
+
+5. OUT OF SCOPE
+⚠  Yang SENGAJA tidak dikerjakan siklus ini. Sudah ada di Backlog.
+•	Dashboard konten (chart, portfolio, news) — Siklus 2-3
+•	Email template HTML fancy — plain text cukup
+•	Midtrans auto-charge recurring — manual renewal dulu
+•	Referral / affiliate system — Backlog
+•	Admin panel — Siklus 7
+
+6. RABBIT HOLES
+⚠  Jebakan yang bisa menghabiskan waktu. Hindari!
+•	Social login selain Google — cukup Google dulu
+•	Email template yang terlalu fancy — plain text sudah cukup untuk MVP
+•	Animasi landing page yang kompleks — konten dulu, animasi nanti
+•	Midtrans recurring payment — manual renewal dulu
+
+7. NO-GOS
+❌  Hal yang sudah disepakati TIDAK akan dilakukan.
+•	TIDAK akan simpan JWT di localStorage — wajib httpOnly cookie untuk refresh token
+•	TIDAK akan skip consent modal — wajib ada sebelum akses fitur apapun
+•	TIDAK akan hardcode API key Midtrans — pakai env var
+•	TIDAK akan skip rate limiting untuk endpoint auth
+•	TIDAK akan ada refund — disclaimer wajib ada di checkout sebelum bayar
+
+8. API CONTRACT
+💡  Kontrak Fahmi <-> Nasywa. Nasywa bisa langsung mock dari sini.
+
+POST /api/v1/auth/register
+json
+// Request
+{
+  "email":    "fahmi@stoxify.id",
+  "phone_wa": "628123456789",
+  "name":     "Muhammad Fahmi",
+  "password": "min8karakter",
+  "channel":  "wa"   // "wa" | "email"
+}
+
+// Response 201
+{
+  "success": true,
+  "data": { "user_id": "uuid", "message": "OTP dikirim ke WA kamu" }
+}
+
+// Error 409 — email sudah ada
+{ "success": false, "error": { "code": "EMAIL_EXISTS", "message": "Email sudah terdaftar" } }
+
+POST /api/v1/auth/login
+json
+// Request
+{ "email": "fahmi@stoxify.id", "password": "password123" }
+
+// Response 200
+// Note: refresh_token di-set via Set-Cookie httpOnly otomatis
+{
+  "success": true,
+  "data": {
+    "access_token": "eyJhbGc...",
+    "user": {
+      "id": "uuid", "name": "Fahmi",
+      "tier": "apex", "is_trial": true,
+      "trial_ends_at": "2026-03-10T08:00:00Z",
+      "profile_completed": false
+    }
+  }
+}
+
+POST /api/v1/subscriptions/checkout
+json
+// Request
+{ "tier": "growth", "billing_cycle": "monthly" }
+
+// Response 201
+{
+  "success": true,
+  "data": {
+    "payment_id":          "uuid",
+    "midtrans_token":      "abc123",       // untuk Snap.js
+    "midtrans_redirect_url": "https://...",// fallback
+    "amount":              550000,
+    "expires_at":          "2026-03-07T09:30:00Z"
+  }
+}
+
+9. DATABASE SCHEMA / MIGRATION
+❌  Wajib buat Alembic migration dulu sebelum coding endpoint.
+python — Alembic
+# app/modules/auth/migration_001_auth.py
+
+def upgrade():
+    # users
+    op.create_table('users',
+        sa.Column('id',               sa.UUID(),       primary_key=True, server_default=sa.text('gen_random_uuid()')),
+        sa.Column('email',            sa.String(255),  unique=True, nullable=False),
+        sa.Column('phone_wa',         sa.String(20),   unique=True, nullable=True),
+        sa.Column('name',             sa.String(255),  nullable=False),
+        sa.Column('hashed_password',  sa.String(255),  nullable=True),
+        sa.Column('google_id',        sa.String(255),  unique=True, nullable=True),
+        sa.Column('tier',             sa.String(10),   server_default='lite'),
+        sa.Column('is_active',        sa.Boolean(),    server_default='TRUE'),
+        sa.Column('is_verified',      sa.Boolean(),    server_default='FALSE'),
+        sa.Column('profile_completed',sa.Boolean(),    server_default='FALSE'),
+        sa.Column('created_at',       sa.TIMESTAMPTZ(),server_default=sa.text('NOW()')),
+        sa.Column('deleted_at',       sa.TIMESTAMPTZ(),nullable=True),
+    )
+
+    # subscriptions
+    op.create_table('subscriptions',
+        sa.Column('id',                   sa.UUID(),       primary_key=True, server_default=sa.text('gen_random_uuid()')),
+        sa.Column('user_id',              sa.UUID(),       sa.ForeignKey('users.id'), unique=True, nullable=False),
+        sa.Column('tier',                 sa.String(10),   nullable=False, server_default='lite'),
+        sa.Column('billing_cycle',        sa.String(10),   nullable=True),
+        sa.Column('status',               sa.String(20),   nullable=False, server_default='active'),
+        sa.Column('is_trial',             sa.Boolean(),    server_default='FALSE'),
+        sa.Column('trial_ends_at',        sa.TIMESTAMPTZ(),nullable=True),
+        sa.Column('current_period_end',   sa.TIMESTAMPTZ(),nullable=True),
+        sa.Column('cancelled_at',         sa.TIMESTAMPTZ(),nullable=True),
+    )
+
+10. CONTOH KODE UTAMA
+Service: Register + Send OTP (Fahmi)
+python
+# app/modules/auth/service.py
+import bcrypt, secrets
+from app.core.redis import redis_client
+
+async def register_user(data: UserCreate, db) -> dict:
+    existing = await db.fetchrow("SELECT id FROM users WHERE email=$1", data.email)
+    if existing:
+        raise HTTPException(409, detail={'code':'EMAIL_EXISTS'})
+
+    hashed = bcrypt.hashpw(data.password.encode(), bcrypt.gensalt(12))
+    user = await db.fetchrow(
+        "INSERT INTO users(email,phone_wa,name,hashed_password) VALUES($1,$2,$3,$4) RETURNING id",
+        data.email, data.phone_wa, data.name, hashed.decode()
+    )
+
+    # OTP: 6 digit, simpan di Redis 5 menit
+    otp = str(secrets.randbelow(900000) + 100000)
+    await redis_client.setex(f"otp:{user['id']}:register", 300, otp)
+
+    if data.channel == 'wa':
+        await send_wa_otp(data.phone_wa, otp)
+    else:
+        await send_email_otp(data.email, otp)
+
+    return {'user_id': str(user['id']), 'message': f'OTP dikirim ke {data.channel}'}
+
+Auth Guard Middleware (Nasywa)
+typescript
+// src/middleware.ts
+import { NextRequest, NextResponse } from 'next/server'
+
+const PUBLIC = ['/', '/login', '/register', '/pricing', '/verify-otp', '/forgot-password']
+
+export function middleware(req: NextRequest) {
+  const isPublic = PUBLIC.some(p => req.nextUrl.pathname.startsWith(p))
+  const token = req.cookies.get('stx_access_token')?.value
+  if (!isPublic && !token)
+    return NextResponse.redirect(new URL('/login', req.url))
+  return NextResponse.next()
+}
+export const config = { matcher: ['/((?!api|_next/static|_next/image|favicon).*)'] }
+
+11. DEFINITION OF DONE
+❌  Siklus dianggap SELESAI hanya kalau SEMUA checklist ini hijau.
+
+Deliverable	PIC	Status
+User bisa register, verifikasi OTP, dan login	Fahmi + Nasywa	⬜ Todo
+Google OAuth berjalan	Fahmi + Nasywa	⬜ Todo
+Trial 3 hari Apex aktif otomatis setelah register	Fahmi	⬜ Todo
+Midtrans checkout berjalan (test mode)	Fahmi + Nasywa	⬜ Todo
+Webhook Midtrans mengupdate tier user	Fahmi	⬜ Todo
+Consent ToS modal muncul dan wajib di-accept	Nasywa	⬜ Todo
+JWT di httpOnly cookie, bukan localStorage	Fahmi	⬜ Todo
+Rate limit auth endpoint aktif	Fahmi	⬜ Todo
+Landing page tampil baik di mobile + desktop	Nasywa	⬜ Todo
+Unit test coverage >= 70% untuk module auth	Fahmi	⬜ Todo
+Tidak ada API key hardcoded	Keduanya	⬜ Todo
+
+12. CATATAN
+Siklus paling krusial — auth dan payment yang tidak solid akan bikin semua siklus berikutnya kesulitan. Prioritaskan keamanan dan testing.
+
+13. APPROVAL
+❌  KEDUA co-founder harus approve sebelum build dimulai.
+
+Co-founder	Status
+Fahmi (Backend/ML Leader)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+Nasywa (Frontend/Mobile)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+
+Catatan revisi (isi kalau rejected):
+Tulis catatan di sini...
+SIKLUS 2
+Data Pipeline + Hot News + Sentiment
+Big Batch — 4 minggu
+Field	Value
+Appetite	Big Batch — 4 minggu
+Mulai	[DD/MM/YYYY]
+Target Selesai	[DD/MM/YYYY]
+Jeda Setelah Siklus	1 minggu
+
+1. PROBLEM
+ℹ  Stoxify tidak punya data pasar sama sekali. Tidak ada harga saham, tidak ada berita, tidak ada sentiment. Tanpa data, semua fitur di siklus berikutnya tidak bisa dibuild.
+
+2. SOLUTION
+Build data pipeline untuk fetch dan cache harga saham IDX+Global+Crypto, sistem Hot News dengan AI summary via Groq, dan Sentiment Analysis engine dengan FinBERT+IndoBERT. Ini adalah jantung Stoxify — semua fitur BI bergantung pada layer ini.
+3. ALUR
+Flow
+Background Pipeline (tidak ada interaksi user):
+  Price Updater (APScheduler)
+    - Crypto: Binance WebSocket, realtime (semua tier)
+    - Saham: yfinance setiap 1 menit (Growth+) / 15 menit (Lite)
+    - Simpan ke TimescaleDB + update Redis cache
+
+  News Fetcher (setiap 15 menit)
+    - Source: RSS Kontan/CNBC + GDELT + Currentsapi
+    - Generate AI summary via Groq
+    - Hitung Hot Score (recency 40% + volume 30% + impact 30%)
+
+  Sentiment Engine (setiap 1 jam)
+    - FinBERT (EN) + IndoBERT (ID) per aset
+    - Output: bullish / neutral / bearish + score 0-1
+
+User-facing:
+  GET /market/assets --> list harga real-time dari Redis
+  GET /market/assets/:symbol/chart --> candle historis (sampai 15 tahun)
+  GET /news/hot --> Hot News feed
+  GET /sentiment/:symbol --> Growth+ only
+
+4. IN SCOPE
+💡  Ini yang PASTI dikerjakan siklus ini. Tidak ada coding sebelum Pitch diapprove.
+
+Fahmi — Backend & ML
+Deliverable	PIC	Status
+Migration: assets, price_history (hypertable), price_realtime_cache	Fahmi	⬜ Todo
+Migration: news_articles, news_asset_relations	Fahmi	⬜ Todo
+Migration: sentiment_scores (hypertable)	Fahmi	⬜ Todo
+Price updater: yfinance IDX + Global, Binance WS Crypto	Fahmi	⬜ Todo
+Redis cache updater: price:{symbol}:{exchange}	Fahmi	⬜ Todo
+GET /market/assets — list dengan harga dari Redis	Fahmi	⬜ Todo
+GET /market/assets/{symbol} — detail + fundamental data	Fahmi	⬜ Todo
+GET /market/assets/{symbol}/chart — candle historis (1D/1W/1M/3M/6M/1Y/ALL)	Fahmi	⬜ Todo
+GET /market/overview — IHSG, global indices, crypto, fear&greed	Fahmi	⬜ Todo
+GET /market/top-movers — gainer/loser/active	Fahmi	⬜ Todo
+GET /market/ipo — IPO tracker IDX	Fahmi	⬜ Todo
+News fetcher service: RSS + GDELT + Currentsapi	Fahmi	⬜ Todo
+Groq integration untuk AI summary berita	Fahmi	⬜ Todo
+Hot Score algorithm: recency 40% + volume_shares 30% + sentiment_impact 30%	Fahmi	⬜ Todo
+GET /news/hot + GET /news/asset/{symbol} + GET /news/morning-brief	Fahmi	⬜ Todo
+Sentiment engine: FinBERT + IndoBERT via HuggingFace inference	Fahmi	⬜ Todo
+GET /sentiment/{symbol} — Growth+ tier gate	Fahmi	⬜ Todo
+GET /sentiment/heatmap + GET /sentiment/ranking — Growth+	Fahmi	⬜ Todo
+
+Nasywa — Frontend & Mobile
+Deliverable	PIC	Status
+Halaman /dashboard — layout utama sidebar + topbar	Nasywa	⬜ Todo
+Widget Market Overview (IHSG, S&P500, BTC, Fear&Greed)	Nasywa	⬜ Todo
+Widget Top Movers (tabs gainer/loser/active)	Nasywa	⬜ Todo
+Widget Hot News feed dengan Hot Score badge	Nasywa	⬜ Todo
+Halaman /news — full news page + filter kategori	Nasywa	⬜ Todo
+Halaman /market/[symbol] — asset detail page	Nasywa	⬜ Todo
+Komponen TradingView Lightweight Charts (embed)	Nasywa	⬜ Todo
+Tombol timeframe: 1D / 1W / 1M / 3M / 6M / 1Y / ALL	Nasywa	⬜ Todo
+Widget Sentiment heatmap (blur + lock untuk Lite)	Nasywa	⬜ Todo
+Halaman /news/morning-brief	Nasywa	⬜ Todo
+Skeleton loading semua widget	Nasywa	⬜ Todo
+Empty state semua halaman	Nasywa	⬜ Todo
+
+5. OUT OF SCOPE
+⚠  Yang SENGAJA tidak dikerjakan siklus ini. Sudah ada di Backlog.
+•	AI Score 0-100 per aset — Siklus 4
+•	ML Predictions (LSTM/Prophet/XGBoost) — Siklus 4
+•	Paid data source (GOAPI, Polygon) — setelah ada revenue
+•	Dark pool dan institutional flow — Siklus 5 (Apex)
+•	Google Trends dalam sentiment — tambahan post-launch
+
+6. RABBIT HOLES
+⚠  Jebakan yang bisa menghabiskan waktu. Hindari!
+•	Akurasi sentiment yang terlalu presisi — cukup 3 label: bullish/neutral/bearish
+•	Custom fine-tuning FinBERT — pakai pretrained model, jangan fine-tune dulu
+•	Terlalu banyak news source — mulai 3-4 source saja, tambah nanti
+•	True realtime WebSocket untuk saham — yfinance 1 menit sudah cukup untuk Growth
+
+7. NO-GOS
+❌  Hal yang sudah disepakati TIDAK akan dilakukan.
+•	TIDAK akan pakai float untuk harga — DECIMAL(20,8) wajib
+•	TIDAK akan fetch data per-user — satu fetch untuk semua user, cache di Redis
+•	TIDAK akan skip Redis cache — kritis untuk performa dan biaya
+
+8. API CONTRACT
+💡  Kontrak Fahmi <-> Nasywa. Nasywa bisa langsung mock dari sini.
+
+GET /api/v1/market/assets/{symbol}?exchange=IDX
+json
+// Response 200
+{
+  "success": true,
+  "data": {
+    "symbol": "BBCA", "exchange": "IDX",
+    "name": "Bank Central Asia Tbk",
+    "price": {
+      "current":    "9500.00000000",
+      "change_abs": "100.00000000",
+      "change_pct": "1.0638",
+      "volume":     12500000,
+      "last_updated": "2026-03-07T09:30:00Z"
+    },
+    "fundamental": {
+      "pe_ratio": "15.2", "pb_ratio": "3.1",
+      "market_cap": 1230000000000,
+      "dividend_yield": "2.5"
+    }
+  }
+}
+
+GET /api/v1/market/assets/{symbol}/chart?timeframe=ALL&interval=1D
+json
+// timeframe: 1D|1W|1M|3M|6M|1Y|ALL (ALL = sampai 15 tahun ke belakang)
+// interval tergantung timeframe: 1D --> 5m, 1M --> 1h, ALL --> 1D
+
+// Response 200
+{
+  "success": true,
+  "data": {
+    "symbol": "BBCA", "timeframe": "ALL", "interval": "1D",
+    "candles": [
+      { "time": 1262304000, "open": "4800.00", "high": "4950.00", "low": "4750.00", "close": "4900.00", "volume": 8500000 }
+    ]
+  }
+}
+
+GET /api/v1/news/hot?category=all&page=1&per_page=20
+json
+// Response 200
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "uuid",
+        "title": "BBCA Cetak Laba Rp 48 Triliun",
+        "source": "Kontan",
+        "ai_summary": "BCA mencatatkan pertumbuhan laba bersih...",
+        "hot_score": "9.2",
+        "published_at": "2026-03-07T08:00:00Z",
+        "related_assets": [{ "symbol":"BBCA","exchange":"IDX","relevance":"0.97" }]
+      }
+    ],
+    "total": 150, "page": 1, "per_page": 20
+  }
+}
+
+9. DATABASE SCHEMA / MIGRATION
+❌  Wajib buat Alembic migration dulu sebelum coding endpoint.
+python — Alembic
+# Siklus 2: Market + News + Sentiment tables
+
+# assets
+op.create_table('assets',
+    sa.Column('id',        sa.UUID(),     primary_key=True, server_default=sa.text('gen_random_uuid()')),
+    sa.Column('symbol',    sa.String(20), nullable=False),
+    sa.Column('exchange',  sa.String(20), nullable=False),
+    sa.Column('asset_type',sa.String(10), nullable=False),  # stock|crypto|etf
+    sa.Column('name',      sa.String(255),nullable=False),
+    sa.Column('sector',    sa.String(100),nullable=True),
+    sa.UniqueConstraint('symbol','exchange'),
+)
+
+# price_history --> TimescaleDB hypertable
+op.create_table('price_history',
+    sa.Column('time',     sa.TIMESTAMPTZ(),nullable=False),
+    sa.Column('symbol',   sa.String(20),   nullable=False),
+    sa.Column('exchange', sa.String(20),   nullable=False),
+    sa.Column('open',     sa.Numeric(20,8),nullable=False),
+    sa.Column('high',     sa.Numeric(20,8),nullable=False),
+    sa.Column('low',      sa.Numeric(20,8),nullable=False),
+    sa.Column('close',    sa.Numeric(20,8),nullable=False),
+    sa.Column('volume',   sa.BigInteger(), nullable=True),
+)
+op.execute("SELECT create_hypertable('price_history','time')")
+
+10. CONTOH KODE UTAMA
+Price Updater Service — APScheduler (Fahmi)
+python
+# app/modules/market/price_updater.py
+import yfinance as yf
+from decimal import Decimal
+from app.core.redis import redis_client
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+scheduler = AsyncIOScheduler()
+
+@scheduler.scheduled_job('interval', minutes=1)
+async def update_stock_prices():
+    symbols = await get_active_stock_symbols()  # dari DB
+    tickers = yf.Tickers(' '.join(symbols))
+    for symbol, ticker in tickers.tickers.items():
+        info  = ticker.fast_info
+        price = Decimal(str(info.last_price))
+        await redis_client.hset(f"price:{symbol}:IDX", mapping={
+            'price':      str(price),
+            'change_pct': str(info.regular_market_change_percent),
+            'volume':     str(info.three_month_average_volume),
+            'updated_at': datetime.utcnow().isoformat()
+        })
+        await redis_client.expire(f"price:{symbol}:IDX", 120)
+
+TradingView Lightweight Chart Component (Nasywa)
+typescript
+// src/components/charts/PriceChart.tsx
+'use client'
+import { useEffect, useRef } from 'react'
+import { createChart, ColorType } from 'lightweight-charts'
+
+export function PriceChart({ symbol, exchange, timeframe }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    if (!ref.current) return
+    const chart = createChart(ref.current, {
+      layout: { background: { type: ColorType.Solid, color: '#010206' }, textColor: '#FFFEF8' },
+      grid: { vertLines: { color: 'rgba(255,254,248,0.05)' }, horzLines: { color: 'rgba(255,254,248,0.05)' } },
+      width: ref.current.clientWidth, height: 400,
+    })
+    const series = chart.addCandlestickSeries({
+      upColor: '#4ADE80', downColor: '#F87171',
+      borderUpColor: '#4ADE80', borderDownColor: '#F87171',
+      wickUpColor: '#4ADE80', wickDownColor: '#F87171',
+    })
+    fetchChartData(symbol, exchange, timeframe).then(d =>
+      series.setData(d.candles.map(c => ({ time: c.time, open: +c.open, high: +c.high, low: +c.low, close: +c.close })))
+    )
+    return () => chart.remove()
+  }, [symbol, exchange, timeframe])
+  return <div ref={ref} className="w-full" />
+}
+
+11. DEFINITION OF DONE
+❌  Siklus dianggap SELESAI hanya kalau SEMUA checklist ini hijau.
+
+Deliverable	PIC	Status
+Price updater jalan, harga update setiap 1 menit di Redis	Fahmi	⬜ Todo
+Chart BBCA dari 2010-2025 bisa tampil (timeframe=ALL)	Fahmi + Nasywa	⬜ Todo
+Hot News menampilkan berita terbaru dengan AI summary	Fahmi + Nasywa	⬜ Todo
+Sentiment score tersedia untuk minimal 20 saham IDX	Fahmi	⬜ Todo
+Semua endpoint market return response < 500ms	Fahmi	⬜ Todo
+Dashboard menampilkan Market Overview dengan data real	Nasywa	⬜ Todo
+Chart interaktif: zoom, crosshair, timeframe switcher	Nasywa	⬜ Todo
+Lite tier menerima harga delay 15 menit (bukan real-time)	Fahmi	⬜ Todo
+Growth+ menerima harga update 1 menit	Fahmi	⬜ Todo
+Unit test price updater dan news fetcher	Fahmi	⬜ Todo
+
+12. CATATAN
+Data source yfinance hanya untuk MVP. Setelah ada revenue, switch ke GOAPI.io (IDX) dan Twelve Data / Polygon.io (global). Pastikan abstraksi data source sudah ada agar mudah di-swap nanti.
+
+13. APPROVAL
+❌  KEDUA co-founder harus approve sebelum build dimulai.
+
+Co-founder	Status
+Fahmi (Backend/ML Leader)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+Nasywa (Frontend/Mobile)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+
+Catatan revisi (isi kalau rejected):
+Tulis catatan di sini...
+SIKLUS 3
+Core User Features — MVP Beta
+Big Batch — 4 minggu
+Field	Value
+Appetite	Big Batch — 4 minggu
+Mulai	[DD/MM/YYYY]
+Target Selesai	[DD/MM/YYYY]
+Jeda Setelah Siklus	1 minggu
+
+1. PROBLEM
+ℹ  User sudah bisa login dan lihat data pasar, tapi belum bisa melakukan apa-apa. Belum ada watchlist, portfolio tracker, screener, atau alert. Produk belum punya value yang cukup untuk membuat user kembali besok.
+
+2. SOLUTION
+Build semua fitur inti yang membuat Stoxify benar-benar berguna sebagai alat investasi sehari-hari: watchlist, portfolio tracker dengan P&L real-time, screener saham, alert harga, dan paper trading simulasi. Setelah siklus ini selesai, kita punya MVP beta yang bisa ditest ke user nyata.
+3. ALUR
+Flow
+Watchlist:
+  Tambah BBCA ke watchlist --> tampil harga real-time + % change
+  Lite: max 10 aset | Growth: max 30 | Apex: unlimited
+
+Portfolio:
+  Input transaksi beli BBCA 1000 lot @8500
+  --> System hitung P&L: (9500-8500) x 1000 = Rp 1.000.000 (+11.76%)
+  --> Chart performa vs benchmark IHSG
+  --> Pie chart alokasi per sektor
+
+Screener:
+  Pilih preset "Saham IDX Undervalued"
+  --> Filter: PE < 15, ROE > 15%, Div Yield > 2%
+  --> Hasil: list saham yang memenuhi kriteria
+
+Alert:
+  Set alert: BBCA harga di atas 10.000
+  --> Notifikasi email (Lite) / push+email (Growth) / WA+push+email (Apex)
+
+Paper Trading (Growth+):
+  Buat simulasi modal Rp 100.000.000
+  --> "Beli" BBCA dengan harga real-time --> P&L terupdate
+
+4. IN SCOPE
+💡  Ini yang PASTI dikerjakan siklus ini. Tidak ada coding sebelum Pitch diapprove.
+
+Fahmi — Backend & ML
+Deliverable	PIC	Status
+Migration: watchlists, watchlist_items	Fahmi	⬜ Todo
+Migration: portfolios, portfolio_assets, transactions	Fahmi	⬜ Todo
+Migration: alerts	Fahmi	⬜ Todo
+CRUD /watchlists + /watchlists/{id}/items	Fahmi	⬜ Todo
+GET /portfolios + POST /portfolios	Fahmi	⬜ Todo
+GET /portfolios/{id} — summary + holdings + P&L kalkulasi	Fahmi	⬜ Todo
+POST /portfolios/{id}/transactions — beli/jual/dividend	Fahmi	⬜ Todo
+GET /portfolios/{id}/transactions	Fahmi	⬜ Todo
+Kalkulasi P&L unrealized: semua Decimal, bukan float	Fahmi	⬜ Todo
+Benchmark comparison IHSG	Fahmi	⬜ Todo
+Tier gate portfolio: Lite 1, Growth 3, Apex unlimited	Fahmi	⬜ Todo
+POST /screener/run — preset + custom filter	Fahmi	⬜ Todo
+GET /screener/presets + POST /screener/presets/save (Growth+)	Fahmi	⬜ Todo
+CRUD /alerts — semua jenis alert	Fahmi	⬜ Todo
+Alert trigger service: cek setiap price update, kirim notif	Fahmi	⬜ Todo
+Integrasi FCM untuk push notification (Growth+)	Fahmi	⬜ Todo
+Paper trading endpoints (sama dengan portfolio, flag is_paper=true)	Fahmi	⬜ Todo
+Unit test P&L kalkulasi, coverage >= 70%	Fahmi	⬜ Todo
+
+Nasywa — Frontend & Mobile
+Deliverable	PIC	Status
+Halaman /watchlist — list aset + harga + % change real-time	Nasywa	⬜ Todo
+Modal tambah aset ke watchlist (search + autocomplete)	Nasywa	⬜ Todo
+Halaman /portfolio — list semua portfolio + summary total	Nasywa	⬜ Todo
+Halaman /portfolio/[id] — summary cards + holdings tabel + chart + pie	Nasywa	⬜ Todo
+Modal tambah transaksi (beli / jual / dividend)	Nasywa	⬜ Todo
+Summary cards: Total Value, P&L Hari Ini, Total Return, Jumlah Aset	Nasywa	⬜ Todo
+Chart performa portfolio (Lightweight Charts)	Nasywa	⬜ Todo
+Pie chart alokasi aset (pakai recharts)	Nasywa	⬜ Todo
+Halaman /screener — filter panel + hasil tabel	Nasywa	⬜ Todo
+Preset screener selector	Nasywa	⬜ Todo
+Halaman /alerts — list + toggle aktif/nonaktif	Nasywa	⬜ Todo
+Modal buat alert baru	Nasywa	⬜ Todo
+Halaman /paper-trading (Growth+ only)	Nasywa	⬜ Todo
+Komponen TierLock: blur + CTA upgrade untuk fitur Growth/Apex	Nasywa	⬜ Todo
+Toast notification untuk alert yang triggered	Nasywa	⬜ Todo
+
+5. OUT OF SCOPE
+⚠  Yang SENGAJA tidak dikerjakan siklus ini. Sudah ada di Backlog.
+•	Risk metrics Sharpe/VaR/Max Drawdown — Siklus 4
+•	AI Score di watchlist dan screener — Siklus 4
+•	Import portfolio dari CSV/Excel — Backlog B003
+•	Export portfolio — Backlog B001/B002
+•	CAGR calculator — Backlog B011
+•	Earnings calendar — Backlog B017
+
+6. RABBIT HOLES
+⚠  Jebakan yang bisa menghabiskan waktu. Hindari!
+•	Kalkulasi realized P&L dengan FIFO — cukup unrealized dulu
+•	Alert terlalu banyak jenisnya — mulai dari price_above, price_below, hot_news
+•	Screener terlalu banyak field — 10-15 field sudah cukup untuk MVP
+•	Benchmark selain IHSG — cukup IHSG dulu untuk saham IDX
+
+7. NO-GOS
+❌  Hal yang sudah disepakati TIDAK akan dilakukan.
+•	TIDAK akan hard delete transaksi atau watchlist — soft delete
+•	TIDAK akan skip tier gate untuk batas portfolio
+•	TIDAK akan pakai float untuk kalkulasi P&L — Decimal wajib
+
+8. API CONTRACT
+💡  Kontrak Fahmi <-> Nasywa. Nasywa bisa langsung mock dari sini.
+
+GET /api/v1/portfolios/{id} — Detail + P&L
+json
+// Response 200
+{
+  "success": true,
+  "data": {
+    "id": "uuid", "name": "Portfolio Utama",
+    "summary": {
+      "total_value":     "125000000.00",
+      "pnl_unrealized":  "15000000.00",
+      "pnl_pct":         "13.64",
+      "pnl_today":       "1250000.00",
+      "pnl_today_pct":   "1.01"
+    },
+    "benchmark": { "symbol":"IHSG", "return_pct":"8.50", "vs_portfolio":"+5.14" },
+    "holdings": [
+      {
+        "symbol": "BBCA", "exchange": "IDX",
+        "quantity": "1000.00", "avg_buy_price": "8500.00",
+        "current_price": "9500.00", "pnl": "1000000.00",
+        "pnl_pct": "11.76", "weight_pct": "7.60"
+      }
+    ]
+  }
+}
+
+POST /api/v1/alerts
+json
+// Request
+{
+  "symbol": "BBCA", "exchange": "IDX",
+  "type": "price_above",   // price_above|price_below|hot_news|volume_spike
+  "condition_value": "10000",
+  "notification_channels": ["push","email"]  // wa hanya Apex
+}
+
+// Response 201
+{ "success": true, "data": { "id": "uuid", "is_active": true } }
+
+// Error 403 — limit tercapai
+{ "success": false, "error": { "code":"ALERT_LIMIT","message":"Limit 10 alert untuk Lite" } }
+
+9. DATABASE SCHEMA / MIGRATION
+❌  Wajib buat Alembic migration dulu sebelum coding endpoint.
+python — Alembic
+# Siklus 3: Watchlist + Portfolio + Alerts
+
+op.create_table('alerts',
+    sa.Column('id',                    sa.UUID(),       primary_key=True, server_default=sa.text('gen_random_uuid()')),
+    sa.Column('user_id',               sa.UUID(),       sa.ForeignKey('users.id'), nullable=False),
+    sa.Column('symbol',                sa.String(20),   nullable=False),
+    sa.Column('exchange',              sa.String(20),   nullable=False),
+    sa.Column('type',                  sa.String(30),   nullable=False),
+    sa.Column('condition_value',       sa.Numeric(20,8),nullable=True),
+    sa.Column('is_active',             sa.Boolean(),    server_default='TRUE'),
+    sa.Column('triggered_count',       sa.Integer(),    server_default='0'),
+    sa.Column('last_triggered',        sa.TIMESTAMPTZ(),nullable=True),
+    sa.Column('notification_channels', sa.JSONB(),      server_default='["email"]'),
+    sa.Column('created_at',            sa.TIMESTAMPTZ(),server_default=sa.text('NOW()')),
+)
+
+op.create_table('portfolios',
+    sa.Column('id',          sa.UUID(),      primary_key=True, server_default=sa.text('gen_random_uuid()')),
+    sa.Column('user_id',     sa.UUID(),      sa.ForeignKey('users.id'), nullable=False),
+    sa.Column('name',        sa.String(100), nullable=False),
+    sa.Column('currency',    sa.String(5),   server_default='IDR'),
+    sa.Column('is_paper',    sa.Boolean(),   server_default='FALSE'),
+    sa.Column('created_at',  sa.TIMESTAMPTZ(),server_default=sa.text('NOW()')),
+    sa.Column('deleted_at',  sa.TIMESTAMPTZ(),nullable=True),
+)
+
+10. CONTOH KODE UTAMA
+Kalkulasi P&L Holdings (Fahmi)
+python
+# app/modules/portfolio/service.py
+from decimal import Decimal
+
+async def calculate_holdings(portfolio_id: str, db, redis) -> list:
+    assets = await db.fetch("SELECT * FROM portfolio_assets WHERE portfolio_id=$1", portfolio_id)
+    result = []
+    total_value = Decimal("0")
+
+    for a in assets:
+        price_data = await redis.hgetall(f"price:{a['symbol']}:{a['exchange']}")
+        current    = Decimal(price_data.get("price", "0"))
+        qty        = Decimal(str(a["quantity"]))
+        avg_buy    = Decimal(str(a["avg_buy_price"]))
+
+        current_value = current * qty
+        pnl           = current_value - (avg_buy * qty)
+        pnl_pct       = (pnl / (avg_buy * qty) * 100) if avg_buy > 0 else Decimal("0")
+        total_value  += current_value
+
+        result.append({
+            "symbol":        a["symbol"],
+            "current_price": str(current),
+            "pnl":           str(pnl.quantize(Decimal("0.00"))),
+            "pnl_pct":       str(pnl_pct.quantize(Decimal("0.00"))),
+        })
+
+    for h in result:
+        w = Decimal(h["pnl"]) / total_value * 100 if total_value else Decimal("0")
+        h["weight_pct"] = str(w.quantize(Decimal("0.00")))
+    return result
+
+TierLock Component (Nasywa)
+typescript
+// src/components/ui/TierLock.tsx
+
+export function TierLock({ requiredTier, featureName, children }) {
+  const { user } = useAuth()
+  const order = { lite:1, growth:2, apex:3 }
+  if (order[user.tier] >= order[requiredTier]) return <>{children}</>
+  return (
+    <div className="relative">
+      <div className="blur-sm pointer-events-none opacity-40">{children}</div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="bg-[#03060F] border border-[#F0B429]/30 rounded-xl p-6 text-center">
+          <p className="text-[#F0B429] font-[Syne] font-bold text-lg mb-1">{featureName}</p>
+          <p className="text-white/50 text-sm mb-4">Tersedia di tier {requiredTier}</p>
+          <a href="/pricing" className="bg-[#F0B429] text-[#010206] font-bold px-4 py-2 rounded-[8px] text-sm">
+            Upgrade Sekarang
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+11. DEFINITION OF DONE
+❌  Siklus dianggap SELESAI hanya kalau SEMUA checklist ini hijau.
+
+Deliverable	PIC	Status
+Watchlist bisa tambah/hapus aset, harga update real-time	Fahmi + Nasywa	⬜ Todo
+Portfolio kalkulasi P&L akurat (verified manual)	Fahmi	⬜ Todo
+Chart performa portfolio tampil	Nasywa	⬜ Todo
+Screener preset bisa dijalankan dan return hasil	Fahmi + Nasywa	⬜ Todo
+Alert trigger dan kirim notifikasi email	Fahmi	⬜ Todo
+Tier gate berjalan untuk semua fitur (portfolio limit, alert limit)	Fahmi	⬜ Todo
+TierLock UI tampil untuk fitur Growth/Apex di user Lite	Nasywa	⬜ Todo
+Paper trading Growth+ bisa simulasi beli/jual	Fahmi + Nasywa	⬜ Todo
+Unit test coverage >= 70% portfolio module	Fahmi	⬜ Todo
+
+12. CATATAN
+Kalau mendekati akhir appetite ada yang tidak selesai, prioritaskan: Portfolio > Watchlist > Alert > Screener > Paper Trading.
+
+13. APPROVAL
+❌  KEDUA co-founder harus approve sebelum build dimulai.
+
+Co-founder	Status
+Fahmi (Backend/ML Leader)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+Nasywa (Frontend/Mobile)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+
+Catatan revisi (isi kalau rejected):
+Tulis catatan di sini...
+SIKLUS 4
+ML Service — AI Score + Predictions
+Big Batch — 4 minggu
+Field	Value
+Appetite	Big Batch — 4 minggu
+Mulai	[DD/MM/YYYY]
+Target Selesai	[DD/MM/YYYY]
+Jeda Setelah Siklus	1 minggu
+
+1. PROBLEM
+ℹ  Stoxify belum punya diferensiasi nyata vs platform lain. AI/ML layer adalah yang membuat Stoxify unik. Tanpa ini, Growth tier belum ada value proposition yang kuat untuk justify harganya.
+
+2. SOLUTION
+Build ML service terpisah (stoxify-ml) dengan model LSTM, Prophet, dan XGBoost untuk price prediction, pattern recognition (5 pola), anomaly detection, dan AI Score 0-100 aggregator dari 4 komponen. Semua fitur ini Growth+ only.
+3. ALUR
+Flow
+ML Pipeline (background, bukan triggered user):
+  Feature Engineering (setiap 15 menit per aset):
+    - Technical: RSI, MACD, Bollinger Band, EMA20/50/200
+    - Fundamental: PE, PB, ROE, DY
+    - Sentiment: composite score dari Siklus 2
+    - Volume: anomaly detection
+
+  Model Inference:
+    - LSTM --> prediksi harga 1D/7D
+    - Prophet --> trend 30D
+    - XGBoost --> sinyal buy/sell (dengan confidence)
+    - Pattern Recognition --> bull flag, bear flag, dll
+
+  AI Score Aggregator:
+    - Technical (25%) + Fundamental (25%) + Sentiment (25%) + ML (25%)
+    - Output: skor 0-100, label, gold badge jika >= 90
+
+User-facing (Growth+ only):
+  GET /ai-score/{symbol} --> score 0-100 + breakdown
+  GET /ai-score/top --> top 10 saham tertinggi
+  GET /ml/predictions/{symbol} --> LSTM + Prophet + XGBoost
+
+4. IN SCOPE
+💡  Ini yang PASTI dikerjakan siklus ini. Tidak ada coding sebelum Pitch diapprove.
+
+Fahmi — Backend & ML
+Deliverable	PIC	Status
+Setup repo stoxify-ml: FastAPI terpisah di Railway	Fahmi	⬜ Todo
+Migration: ml_predictions, ai_scores (hypertable), pattern_detections	Fahmi	⬜ Todo
+Feature engineering pipeline (technical + fundamental + sentiment + volume)	Fahmi	⬜ Todo
+LSTM model untuk prediksi harga 1D dan 7D	Fahmi	⬜ Todo
+Prophet model untuk trend 30D	Fahmi	⬜ Todo
+XGBoost classifier untuk sinyal buy/sell	Fahmi	⬜ Todo
+Pattern Recognition: bull flag, bear flag, double top, double bottom, head & shoulders	Fahmi	⬜ Todo
+Anomaly detection: volume spike, price gap, unusual momentum	Fahmi	⬜ Todo
+AI Score aggregator: weighted average 4 komponen	Fahmi	⬜ Todo
+Gold badge logic: score >= 90	Fahmi	⬜ Todo
+Scheduler: inference setiap 15 menit untuk aset aktif	Fahmi	⬜ Todo
+GET /ai-score/{symbol} — Growth+ only	Fahmi	⬜ Todo
+GET /ai-score/top — Growth+ only	Fahmi	⬜ Todo
+GET /ml/predictions/{symbol} — Growth+ only	Fahmi	⬜ Todo
+GET /ml/patterns/{symbol} — Growth+ only	Fahmi	⬜ Todo
+Risk metrics endpoint: Sharpe Ratio, VaR, Max Drawdown untuk portfolio	Fahmi	⬜ Todo
+Unit test AI Score aggregator	Fahmi	⬜ Todo
+
+Nasywa — Frontend & Mobile
+Deliverable	PIC	Status
+AI Score badge di watchlist (skor + warna label)	Nasywa	⬜ Todo
+AI Score card di halaman /market/[symbol]	Nasywa	⬜ Todo
+Breakdown chart: 4 komponen score (bar chart)	Nasywa	⬜ Todo
+ML predictions widget: LSTM overlay + Prophet trendline di chart	Nasywa	⬜ Todo
+Pattern detection badge di TradingView chart	Nasywa	⬜ Todo
+Tambahkan filter AI Score di halaman /screener	Nasywa	⬜ Todo
+Risk metrics section di halaman /portfolio/[id]	Nasywa	⬜ Todo
+Gold badge untuk aset dengan AI Score >= 90	Nasywa	⬜ Todo
+Semua fitur dengan TierLock untuk user Lite	Nasywa	⬜ Todo
+
+5. OUT OF SCOPE
+⚠  Yang SENGAJA tidak dikerjakan siklus ini. Sudah ada di Backlog.
+•	Smart Recommendation Engine (Personalized For You, dll) — Siklus 5 (Apex)
+•	Intraday Intelligence Suite — Siklus 5 (Apex)
+•	Model retraining otomatis — post-launch
+•	Backtesting engine — Backlog
+•	Custom model per-user — Backlog
+
+6. RABBIT HOLES
+⚠  Jebakan yang bisa menghabiskan waktu. Hindari!
+•	Over-fitting model — gunakan validation set yang ketat, jangan kejar akurasi 100%
+•	Terlalu banyak fitur ML — mulai dari 20-30 fitur teknikal yang paling proven dulu
+•	Terlalu complex deployment model — cukup satu ML service, satu Railway instance
+•	Confidence interval terlalu detail di UI — cukup upper/lower bound
+
+7. NO-GOS
+❌  Hal yang sudah disepakati TIDAK akan dilakukan.
+•	TIDAK akan klaim akurasi prediksi tanpa disclaimer
+•	TIDAK akan simpan model di database — simpan di filesystem Railway
+•	TIDAK akan block main thread dengan inference — wajib async/background task
+
+8. API CONTRACT
+💡  Kontrak Fahmi <-> Nasywa. Nasywa bisa langsung mock dari sini.
+
+GET /api/v1/ai-score/{symbol}?exchange=IDX
+json
+// Auth: JWT required, Tier: growth+
+
+// Response 200
+{
+  "success": true,
+  "data": {
+    "symbol": "BBCA", "exchange": "IDX",
+    "score": 82,
+    "label": "buy",
+    "is_gold_badge": false,
+    "breakdown": {
+      "technical": 85, "fundamental": 78,
+      "sentiment": 80, "ml": 83
+    },
+    "key_catalysts": [
+      "RSI oversold recovery",
+      "Volume breakout 3x rata-rata"
+    ],
+    "generated_at": "2026-03-07T09:30:00Z",
+    "next_update":  "2026-03-07T09:45:00Z"
+  }
+}
+
+GET /api/v1/ml/predictions/{symbol}?exchange=IDX
+json
+// Auth: JWT required, Tier: growth+
+
+// Response 200
+{
+  "success": true,
+  "data": {
+    "symbol": "BBCA",
+    "lstm": { "price_1d": "9620.00", "price_7d": "9850.00", "confidence": "0.78" },
+    "prophet": { "trend": "upward", "price_30d": "10200.00" },
+    "xgboost": { "signal": "buy", "confidence": "0.82" },
+    "patterns": [{ "pattern": "bull_flag", "direction": "bullish", "confidence": "0.75" }],
+    "anomalies": [{ "type": "volume_spike", "severity": "medium" }]
+  }
+}
+
+9. DATABASE SCHEMA / MIGRATION
+❌  Wajib buat Alembic migration dulu sebelum coding endpoint.
+python — Alembic
+# Siklus 4: ML tables
+
+op.create_table('ai_scores',  # TimescaleDB hypertable
+    sa.Column('time',              sa.TIMESTAMPTZ(), nullable=False),
+    sa.Column('symbol',            sa.String(20),    nullable=False),
+    sa.Column('exchange',          sa.String(20),    nullable=False),
+    sa.Column('score',             sa.SmallInteger(),nullable=False),  # 0-100
+    sa.Column('label',             sa.String(15),    nullable=False),
+    sa.Column('technical_score',   sa.SmallInteger(),nullable=True),
+    sa.Column('fundamental_score', sa.SmallInteger(),nullable=True),
+    sa.Column('sentiment_score',   sa.SmallInteger(),nullable=True),
+    sa.Column('ml_score',          sa.SmallInteger(),nullable=True),
+    sa.Column('is_gold_badge',     sa.Boolean(),     server_default='FALSE'),
+)
+op.execute("SELECT create_hypertable('ai_scores','time')")
+
+10. CONTOH KODE UTAMA
+AI Score Aggregator (Fahmi)
+python
+# stoxify-ml/app/modules/ai_score/aggregator.py
+
+WEIGHTS = { "technical": 0.25, "fundamental": 0.25, "sentiment": 0.25, "ml": 0.25 }
+LABELS = [(80,"strong_buy"), (60,"buy"), (40,"neutral"), (20,"sell"), (0,"strong_sell")]
+
+async def calculate_ai_score(symbol: str, exchange: str) -> dict:
+    tech  = await get_technical_score(symbol, exchange)
+    fund  = await get_fundamental_score(symbol, exchange)
+    sent  = await get_sentiment_score(symbol, exchange)
+    ml    = await get_ml_score(symbol, exchange)
+
+    score = int(tech*0.25 + fund*0.25 + sent*0.25 + ml*0.25)
+    label = next(l for threshold, l in LABELS if score >= threshold)
+
+    return {
+        "score":         score,
+        "label":         label,
+        "is_gold_badge": score >= 90,
+        "breakdown":     { "technical":tech, "fundamental":fund, "sentiment":sent, "ml":ml }
+    }
+
+11. DEFINITION OF DONE
+❌  Siklus dianggap SELESAI hanya kalau SEMUA checklist ini hijau.
+
+Deliverable	PIC	Status
+AI Score tersedia untuk minimal 50 saham IDX	Fahmi	⬜ Todo
+LSTM prediksi 1D dan 7D berjalan	Fahmi	⬜ Todo
+AI Score badge tampil di watchlist dan asset detail	Nasywa	⬜ Todo
+Gold badge muncul untuk score >= 90	Nasywa	⬜ Todo
+Risk metrics (Sharpe, VaR) tampil di portfolio	Fahmi + Nasywa	⬜ Todo
+ML service deploy di Railway terpisah	Fahmi	⬜ Todo
+TierLock: Lite tidak bisa akses AI Score	Nasywa	⬜ Todo
+Inference setiap 15 menit jalan tanpa crash	Fahmi	⬜ Todo
+
+12. CATATAN
+Akurasi model tidak harus tinggi di MVP — yang penting pipeline jalan. Model bisa terus di-improve setelah launch. Jangan terjebak tuning model terlalu lama.
+
+13. APPROVAL
+❌  KEDUA co-founder harus approve sebelum build dimulai.
+
+Co-founder	Status
+Fahmi (Backend/ML Leader)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+Nasywa (Frontend/Mobile)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+
+Catatan revisi (isi kalau rejected):
+Tulis catatan di sini...
+SIKLUS 5
+Intraday Suite + Smart Recommendations (Apex)
+Big Batch — 5 minggu
+Field	Value
+Appetite	Big Batch — 5 minggu
+Mulai	[DD/MM/YYYY]
+Target Selesai	[DD/MM/YYYY]
+Jeda Setelah Siklus	1 minggu
+
+1. PROBLEM
+ℹ  Apex tier belum punya value yang cukup untuk justify harga Rp 885.000/bulan. User aktif yang trading intraday tidak punya alat yang benar-benar membantu di Stoxify.
+
+2. SOLUTION
+Build Smart Recommendation Engine (AI Pick of the Day, Personalized For You, Opportunity Scanner, Portfolio Optimizer, Scenario Planner) dan Intraday Intelligence Suite (Pre-Market Brief, Intraday Signals, AI Trade Planner, Trading Journal otomatis). Plus institutional data (whale tracker, smart money flow, insider transactions).
+3. ALUR
+Flow
+Smart Recommendation Engine (Apex only):
+  07.00 WIB --> Generate AI Pick of the Day (1 saham)
+  --> Entry price, target, stop loss, risk/reward ratio
+  --> Opportunity Scanner: 6 jenis (Breakout, Oversold Bounce, dll)
+
+Intraday Intelligence Suite (Apex only):
+  07.55 WIB --> Pre-Market Brief dikirim (push + WA)
+  Jam pasar --> Intraday Signals update real-time
+  Trade Planner: input entry/target/SL/modal --> kalkulasi lot, fee, R:R
+  Trading Journal --> auto-record dari transaksi + AI insight bulanan
+
+Institutional Data (Apex):
+  On-chain whale tracker (Crypto)
+  Smart money flow per broker (IDX)
+  Insider transactions IDX
+
+4. IN SCOPE
+💡  Ini yang PASTI dikerjakan siklus ini. Tidak ada coding sebelum Pitch diapprove.
+
+Fahmi — Backend & ML
+Deliverable	PIC	Status
+Migration: recommendations, trading_journal_entries	Fahmi	⬜ Todo
+Smart Recommendation Engine: daily pick algorithm	Fahmi	⬜ Todo
+Opportunity Scanner: 6 jenis scanner	Fahmi	⬜ Todo
+Portfolio Optimizer: rebalancing suggestion	Fahmi	⬜ Todo
+Scenario Planner: simulasi 2-3 skenario	Fahmi	⬜ Todo
+GET /recommendations/daily-pick — Apex only	Fahmi	⬜ Todo
+GET /recommendations/personalized — Apex only	Fahmi	⬜ Todo
+GET /recommendations/opportunity-scanner?type=breakout — Apex only	Fahmi	⬜ Todo
+GET /recommendations/{id}/analysis — Apex only	Fahmi	⬜ Todo
+GET /intraday/pre-market-brief — generate jam 07.00	Fahmi	⬜ Todo
+GET /intraday/signals — Apex only	Fahmi	⬜ Todo
+POST /intraday/trade-planner — kalkulasi lot, fee, R:R	Fahmi	⬜ Todo
+GET + POST /journal — Apex only	Fahmi	⬜ Todo
+GET /journal/monthly-insight — AI insight via Groq	Fahmi	⬜ Todo
+GET /institutional/whale-tracker — Apex only	Fahmi	⬜ Todo
+GET /institutional/smart-money — Apex only	Fahmi	⬜ Todo
+Consent renewal: intraday_trading expires tiap 30 hari	Fahmi	⬜ Todo
+Scheduler: Pre-Market Brief generate + push jam 07.00 WIB	Fahmi	⬜ Todo
+Accuracy tracking untuk rekomendasi historical	Fahmi	⬜ Todo
+
+Nasywa — Frontend & Mobile
+Deliverable	PIC	Status
+Halaman /recommendations — tabs: AI Pick / Personalized / Scanner	Nasywa	⬜ Todo
+Halaman /recommendations/[id] — analisis lengkap + accuracy badge	Nasywa	⬜ Todo
+Halaman /intraday — Pre-Market Brief + Signals + Market Radar	Nasywa	⬜ Todo
+Trade Planner form + hasil kalkulasi (lot, fee, R:R ratio)	Nasywa	⬜ Todo
+Halaman /journal — list entries + monthly summary	Nasywa	⬜ Todo
+Auto-populate journal dari transaksi portfolio	Nasywa	⬜ Todo
+Monthly AI insight display	Nasywa	⬜ Todo
+Institutional data widgets (whale tracker, smart money flow)	Nasywa	⬜ Todo
+Consent modal khusus intraday_trading (renewal 30 hari)	Nasywa	⬜ Todo
+Semua halaman ini exclusive untuk Apex tier	Nasywa	⬜ Todo
+
+5. OUT OF SCOPE
+⚠  Yang SENGAJA tidak dikerjakan siklus ini. Sudah ada di Backlog.
+•	Chat support — Siklus 6
+•	Community feed — Siklus 6
+•	Admin dashboard — Siklus 7
+•	Mobile app Flutter — post-launch
+•	Custom automation rules — Backlog
+•	API access untuk developer — Backlog
+
+6. RABBIT HOLES
+⚠  Jebakan yang bisa menghabiskan waktu. Hindari!
+•	Accuracy tracking terlalu presisi — cukup hit/miss berdasarkan target price
+•	Pre-Market Brief terlalu panjang — max 5 poin, bukan essay
+•	Institutional data terlalu dalam — cukup whale address dan broker flow dulu
+•	Scenario Planner terlalu banyak variabel — cukup 2-3 skenario
+
+7. NO-GOS
+❌  Hal yang sudah disepakati TIDAK akan dilakukan.
+•	TIDAK akan klaim sinyal akurat 100% — selalu ada disclaimer AI
+•	TIDAK akan bypass consent renewal untuk intraday_trading
+•	TIDAK akan simpan data sensitif user tanpa enkripsi
+
+8. API CONTRACT
+💡  Kontrak Fahmi <-> Nasywa. Nasywa bisa langsung mock dari sini.
+
+GET /api/v1/recommendations/daily-pick
+json
+// Auth: JWT required, Tier: apex
+
+// Response 200
+{
+  "success": true,
+  "data": {
+    "date": "2026-03-07",
+    "pick": {
+      "id": "uuid",
+      "symbol": "BBCA", "exchange": "IDX",
+      "title": "BBCA: Momentum Breakout Terkonfirmasi",
+      "rationale": "BBCA mencetak breakout dari resistance 9400...",
+      "entry_price": "9480.00", "target_price": "9800.00",
+      "stop_loss": "9350.00", "risk_reward": "2.46",
+      "confidence": "0.85", "signal": "buy",
+      "valid_until": "2026-03-07T15:30:00Z"
+    }
+  }
+}
+
+POST /api/v1/intraday/trade-planner
+json
+// Auth: JWT required, Tier: apex
+
+// Request
+{
+  "symbol": "BBCA", "exchange": "IDX",
+  "direction": "long",
+  "entry_price": "9480", "target_price": "9650", "stop_loss": "9400",
+  "capital": "10000000", "risk_per_trade_pct": "2"
+}
+
+// Response 200
+{
+  "success": true,
+  "data": {
+    "recommended_lots": 10,
+    "position_size": "9480000.00",
+    "max_loss": "200000.00",
+    "potential_profit": "1700000.00",
+    "risk_reward": "8.50",
+    "fee_estimate": "47400.00",
+    "net_profit_after_fee": "1652600.00",
+    "capital_used_pct": "94.80"
+  }
+}
+
+9. DATABASE SCHEMA / MIGRATION
+❌  Wajib buat Alembic migration dulu sebelum coding endpoint.
+python — Alembic
+# Siklus 5: Recommendations + Trading Journal
+
+op.create_table('recommendations',
+    sa.Column('id',           sa.UUID(),        primary_key=True, server_default=sa.text('gen_random_uuid()')),
+    sa.Column('type',         sa.String(20),    nullable=False),  # daily_pick|personalized|scanner
+    sa.Column('user_id',      sa.UUID(),        nullable=True),   # null = global pick
+    sa.Column('symbol',       sa.String(20),    nullable=False),
+    sa.Column('exchange',     sa.String(20),    nullable=False),
+    sa.Column('entry_price',  sa.Numeric(20,8), nullable=True),
+    sa.Column('target_price', sa.Numeric(20,8), nullable=True),
+    sa.Column('stop_loss',    sa.Numeric(20,8), nullable=True),
+    sa.Column('risk_reward',  sa.Numeric(10,4), nullable=True),
+    sa.Column('signal',       sa.String(10),    nullable=False),
+    sa.Column('valid_until',  sa.TIMESTAMPTZ(), nullable=True),
+    sa.Column('actual_outcome',sa.String(10),   nullable=True),   # hit|miss|expired
+    sa.Column('created_at',   sa.TIMESTAMPTZ(), server_default=sa.text('NOW()')),
+)
+
+10. CONTOH KODE UTAMA
+Trade Planner Calculation (Fahmi)
+python
+# app/modules/intraday/service.py
+from decimal import Decimal
+
+def calculate_trade_plan(data) -> dict:
+    entry  = Decimal(data.entry_price)
+    target = Decimal(data.target_price)
+    sl     = Decimal(data.stop_loss)
+    capital= Decimal(data.capital)
+    risk   = Decimal(data.risk_per_trade_pct) / 100
+
+    max_loss      = capital * risk
+    risk_per_share= abs(entry - sl)
+    lots          = int(max_loss / risk_per_share / 100) if risk_per_share > 0 else 0
+    shares        = lots * 100
+    pos_size      = entry * shares
+    profit        = abs(target - entry) * shares
+    actual_loss   = risk_per_share * shares
+    rr            = profit / actual_loss if actual_loss > 0 else Decimal("0")
+    fee           = pos_size * Decimal("0.002")  # 0.2% avg fee IDX
+
+    TWO = Decimal("0.00")
+    return {
+        "recommended_lots":     lots,
+        "position_size":        str(pos_size.quantize(TWO)),
+        "max_loss":             str(actual_loss.quantize(TWO)),
+        "potential_profit":     str(profit.quantize(TWO)),
+        "risk_reward":          str(rr.quantize(TWO)),
+        "fee_estimate":         str(fee.quantize(TWO)),
+        "net_profit_after_fee": str((profit - fee).quantize(TWO)),
+        "capital_used_pct":     str((pos_size/capital*100).quantize(TWO)),
+    }
+
+11. DEFINITION OF DONE
+❌  Siklus dianggap SELESAI hanya kalau SEMUA checklist ini hijau.
+
+Deliverable	PIC	Status
+AI Pick of the Day generate setiap pagi jam 07.00	Fahmi	⬜ Todo
+Opportunity Scanner 6 jenis berjalan	Fahmi	⬜ Todo
+Trade Planner kalkulasi akurat (verified manual)	Fahmi	⬜ Todo
+Trading Journal auto-populate dari transaksi portfolio	Fahmi + Nasywa	⬜ Todo
+Monthly AI insight via Groq berjalan	Fahmi	⬜ Todo
+Pre-Market Brief dikirim via push + WA jam 07.00	Fahmi	⬜ Todo
+Consent renewal 30 hari untuk intraday berjalan	Fahmi + Nasywa	⬜ Todo
+Institutional whale tracker tampil data Crypto	Fahmi + Nasywa	⬜ Todo
+Semua fitur hanya accessible Apex tier	Keduanya	⬜ Todo
+
+12. CATATAN
+Kalau harus prioritaskan: Daily Pick > Opportunity Scanner > Trade Planner > Trading Journal > Institutional Data.
+
+13. APPROVAL
+❌  KEDUA co-founder harus approve sebelum build dimulai.
+
+Co-founder	Status
+Fahmi (Backend/ML Leader)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+Nasywa (Frontend/Mobile)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+
+Catatan revisi (isi kalau rejected):
+Tulis catatan di sini...
+SIKLUS 6
+Chat Support + Community + Notifikasi
+Big Batch — 4 minggu
+Field	Value
+Appetite	Big Batch — 4 minggu
+Mulai	[DD/MM/YYYY]
+Target Selesai	[DD/MM/YYYY]
+Jeda Setelah Siklus	1 minggu
+
+1. PROBLEM
+ℹ  User tidak bisa berinteraksi satu sama lain di Stoxify, dan tidak bisa tanya AI tentang investasi mereka secara langsung. Platform terasa dingin dan one-way.
+
+2. SOLUTION
+Build Chat AI via WebSocket streaming (Groq), dengan eskalasi ke CS manusia untuk Apex. Community feed per-aset dengan daily limit per tier. Sistem notifikasi lengkap: email (semua) + push (Growth+) + WA (Apex).
+3. ALUR
+Flow
+Chat AI:
+  Klik chat widget --> WebSocket connect ke /ws/chat?token=xxx
+  Ketik pertanyaan --> forward ke Groq (streaming)
+  Token-per-token response tampil di UI
+  Kalau trigger kata kunci billing/refund/bug --> eskalasi CS (Apex)
+  Token limit: Lite 500/hari | Growth 2000/hari | Apex unlimited
+
+Community:
+  Buka /community --> global feed atau filter by aset
+  Like, comment, post baru
+  Post limit: Lite 5/hari | Growth 20/hari | Apex unlimited
+
+Notifikasi (sesuai tier):
+  Alert harga triggered --> email (Lite) / email+push (Growth) / email+push+WA (Apex)
+  Morning Brief --> Growth+ (email + push jam 06.55)
+  Pre-Market Brief --> Apex (email + push + WA jam 07.00)
+
+4. IN SCOPE
+💡  Ini yang PASTI dikerjakan siklus ini. Tidak ada coding sebelum Pitch diapprove.
+
+Fahmi — Backend & ML
+Deliverable	PIC	Status
+Migration: chat_sessions, chat_messages	Fahmi	⬜ Todo
+Migration: community_posts, community_comments	Fahmi	⬜ Todo
+WebSocket /ws/chat — auth via query param ?token=	Fahmi	⬜ Todo
+Groq integration untuk chat AI (streaming response)	Fahmi	⬜ Todo
+Token counter per user per hari (di Redis)	Fahmi	⬜ Todo
+Eskalasi trigger: kata kunci billing/refund/bug + confidence rendah	Fahmi	⬜ Todo
+GET /chat/sessions + GET /chat/sessions/{id}/messages	Fahmi	⬜ Todo
+GET /community/feed — global + filter by symbol	Fahmi	⬜ Todo
+POST /community/posts — dengan daily limit	Fahmi	⬜ Todo
+POST /community/posts/{id}/like + /community/posts/{id}/comments	Fahmi	⬜ Todo
+GET + PATCH /notifications/preferences	Fahmi	⬜ Todo
+FCM push notification service (Growth+)	Fahmi	⬜ Todo
+WA notification Fonnte untuk alert + morning/pre-market brief (Apex)	Fahmi	⬜ Todo
+Daily limit enforcement: 5/20/unlimited post per tier	Fahmi	⬜ Todo
+Post moderation: flag + soft delete	Fahmi	⬜ Todo
+
+Nasywa — Frontend & Mobile
+Deliverable	PIC	Status
+Chat widget floating bubble di semua halaman dashboard	Nasywa	⬜ Todo
+Chat panel: message list + input + streaming token-by-token	Nasywa	⬜ Todo
+Token counter display: "X/500 token hari ini" (Lite)	Nasywa	⬜ Todo
+Indicator eskalasi: "Menghubungkan ke CS..."	Nasywa	⬜ Todo
+Halaman /community — feed + filter tabs (Global, IDX, Crypto)	Nasywa	⬜ Todo
+Komponen Post card: avatar, konten, like count, comment, aset tag	Nasywa	⬜ Todo
+Modal buat post baru dengan mention aset	Nasywa	⬜ Todo
+Comment thread view	Nasywa	⬜ Todo
+Halaman /settings/notifications — toggle per jenis notif	Nasywa	⬜ Todo
+Toast untuk notifikasi real-time kalau user sedang online	Nasywa	⬜ Todo
+Badge counter notif di topbar	Nasywa	⬜ Todo
+
+5. OUT OF SCOPE
+⚠  Yang SENGAJA tidak dikerjakan siklus ini. Sudah ada di Backlog.
+•	Admin moderation dashboard — Siklus 7
+•	Community leaderboard — Backlog
+•	Portfolio sharing ke feed — Backlog B018
+•	Follow user — Backlog B019
+•	Chat AI yang bisa baca portfolio user secara langsung — Backlog
+•	Screener template sharing di community — Backlog B016
+
+6. RABBIT HOLES
+⚠  Jebakan yang bisa menghabiskan waktu. Hindari!
+•	Chat history permanen yang panjang — cukup 50 pesan terakhir per session
+•	Community moderation AI otomatis — manual flagging dulu
+•	Real-time community feed WebSocket — polling 30 detik sudah cukup
+•	Rich text editor — plain text + mention aset sudah cukup untuk MVP
+
+7. NO-GOS
+❌  Hal yang sudah disepakati TIDAK akan dilakukan.
+•	TIDAK akan simpan chat history secara permanen tanpa consent
+•	TIDAK akan share chat ke user lain (chat bersifat private)
+•	TIDAK akan hard delete community post — soft delete
+
+8. API CONTRACT
+💡  Kontrak Fahmi <-> Nasywa. Nasywa bisa langsung mock dari sini.
+
+WebSocket /ws/chat — Protocol
+json
+// Connect: wss://api.stoxify.id/ws/chat?token={access_token}
+
+// Client --> Server
+{ "type": "message", "content": "Analisa BBCA dong", "session_id": null }
+
+// Server --> Client (streaming, token demi token)
+{ "type": "chunk", "content": "BBCA ", "session_id": "uuid" }
+{ "type": "chunk", "content": "saat ini...", "session_id": "uuid" }
+
+// Server --> Client (selesai)
+{ "type": "done", "session_id": "uuid", "tokens_used": 150, "tokens_remaining": 350 }
+
+// Server --> Client (eskalasi ke CS)
+{ "type": "escalated", "message": "Menghubungkan ke CS...", "estimated_wait": "5 menit" }
+
+// Server --> Client (limit tercapai)
+{ "type": "error", "code": "TOKEN_LIMIT_REACHED", "message": "Limit 500 token/hari. Upgrade ke Growth." }
+
+POST /api/v1/community/posts
+json
+// Request
+{ "content": "BBCA breakout nih!", "symbol": "BBCA", "exchange": "IDX" }
+
+// Response 201
+{ "success": true, "data": { "id": "uuid" } }
+
+// Error 429 — daily limit
+{ "success": false, "error": { "code": "POST_LIMIT", "message": "Limit 5 post/hari untuk Lite." } }
+
+9. DATABASE SCHEMA / MIGRATION
+❌  Wajib buat Alembic migration dulu sebelum coding endpoint.
+python — Alembic
+# Siklus 6: Chat + Community
+
+op.create_table('chat_sessions',
+    sa.Column('id',           sa.UUID(),       primary_key=True, server_default=sa.text('gen_random_uuid()')),
+    sa.Column('user_id',      sa.UUID(),       sa.ForeignKey('users.id'), nullable=False),
+    sa.Column('agent_type',   sa.String(10),   nullable=False, server_default='ai'),
+    sa.Column('status',       sa.String(10),   nullable=False, server_default='open'),
+    sa.Column('created_at',   sa.TIMESTAMPTZ(),server_default=sa.text('NOW()')),
+)
+
+op.create_table('community_posts',
+    sa.Column('id',                sa.UUID(),       primary_key=True, server_default=sa.text('gen_random_uuid()')),
+    sa.Column('user_id',           sa.UUID(),       sa.ForeignKey('users.id'), nullable=False),
+    sa.Column('symbol',            sa.String(20),   nullable=True),
+    sa.Column('exchange',          sa.String(20),   nullable=True),
+    sa.Column('content',           sa.Text(),       nullable=False),
+    sa.Column('like_count',        sa.Integer(),    server_default='0'),
+    sa.Column('moderation_status', sa.String(10),   server_default='approved'),
+    sa.Column('deleted_at',        sa.TIMESTAMPTZ(),nullable=True),
+    sa.Column('created_at',        sa.TIMESTAMPTZ(),server_default=sa.text('NOW()')),
+)
+
+10. CONTOH KODE UTAMA
+WebSocket Chat Handler (Fahmi)
+python
+# app/modules/chat/websocket.py
+from fastapi import WebSocket, WebSocketDisconnect
+from groq import AsyncGroq
+from app.core.redis import redis_client
+
+groq_client = AsyncGroq()
+DAILY_LIMITS = {"lite": 500, "growth": 2000, "apex": None}
+
+async def chat_handler(ws: WebSocket, user, db):
+    await ws.accept()
+    session_id = await create_chat_session(user.id, db)
+
+    try:
+        while True:
+            msg = await ws.receive_json()
+            if msg["type"] != "message": continue
+
+            limit = DAILY_LIMITS.get(user.tier)
+            if limit:
+                used = int(await redis_client.get(f"tokens:{user.id}:{today()}") or 0)
+                if used >= limit:
+                    await ws.send_json({"type":"error","code":"TOKEN_LIMIT_REACHED"})
+                    continue
+
+            stream = await groq_client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=build_messages(msg["content"], user),
+                stream=True, max_tokens=500
+            )
+
+            total = 0
+            async for chunk in stream:
+                delta = chunk.choices[0].delta.content or ""
+                if delta:
+                    await ws.send_json({"type":"chunk","content":delta,"session_id":session_id})
+                if chunk.usage: total = chunk.usage.total_tokens
+
+            await redis_client.incrby(f"tokens:{user.id}:{today()}", total)
+            await redis_client.expire(f"tokens:{user.id}:{today()}", 86400)
+            remaining = (limit - total) if limit else None
+            await ws.send_json({"type":"done","tokens_used":total,"tokens_remaining":remaining})
+
+    except WebSocketDisconnect:
+        await close_chat_session(session_id, db)
+
+11. DEFINITION OF DONE
+❌  Siklus dianggap SELESAI hanya kalau SEMUA checklist ini hijau.
+
+Deliverable	PIC	Status
+Chat AI streaming berjalan via WebSocket	Fahmi + Nasywa	⬜ Todo
+Token limit per tier enforced (500/2000/unlimited)	Fahmi	⬜ Todo
+Community feed tampil dengan post, like, comment	Fahmi + Nasywa	⬜ Todo
+Daily post limit enforced per tier	Fahmi	⬜ Todo
+Push notification sampai ke device (Growth+)	Fahmi	⬜ Todo
+WA notification sampai ke user (Apex)	Fahmi	⬜ Todo
+Chat widget floating tersedia di semua halaman	Nasywa	⬜ Todo
+Eskalasi ke CS trigger dengan benar	Fahmi	⬜ Todo
+
+12. CATATAN
+WebSocket bisa tricky — pastikan ada fallback untuk koneksi yang drop. Prioritaskan Chat AI dulu baru Community.
+
+13. APPROVAL
+❌  KEDUA co-founder harus approve sebelum build dimulai.
+
+Co-founder	Status
+Fahmi (Backend/ML Leader)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+Nasywa (Frontend/Mobile)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+
+Catatan revisi (isi kalau rejected):
+Tulis catatan di sini...
+SIKLUS 7
+Admin Dashboard + Marketing AI Suite
+Big Batch — 3 minggu
+Field	Value
+Appetite	Big Batch — 3 minggu
+Mulai	[DD/MM/YYYY]
+Target Selesai	[DD/MM/YYYY]
+Jeda Setelah Siklus	1 minggu
+
+1. PROBLEM
+ℹ  Fahmi dan Nasywa tidak bisa monitor user, revenue, dan consent secara real-time. Kalau ada masalah payment atau consent, harus cek manual di database. Marketing juga butuh alat untuk buat konten lebih cepat.
+
+2. SOLUTION
+Build admin dashboard internal dengan RBAC, consent management untuk audit OJK (export CSV dengan SHA-256 hash), user management, revenue dashboard, dan Marketing AI Suite untuk generate konten sosmed + email.
+3. ALUR
+Flow
+Admin Dashboard (hanya bisa diakses admin role):
+  Overview: total user, MRR, DAU, trial aktif
+  User management: cari, lihat detail, manual ubah tier
+  Consent log: lihat semua consent, export CSV/PDF untuk OJK
+  Revenue: chart MRR per bulan, breakdown per tier
+
+Marketing AI Suite:
+  Input: topik + target audience + tone
+  Output: tweet, caption IG, email subject, push copy, blog intro
+  Generate via Groq + Gemini Flash
+
+4. IN SCOPE
+💡  Ini yang PASTI dikerjakan siklus ini. Tidak ada coding sebelum Pitch diapprove.
+
+Fahmi — Backend & ML
+Deliverable	PIC	Status
+Migration: admin_users, admin_audit_logs	Fahmi	⬜ Todo
+RBAC middleware: cek admin role sebelum /admin/*	Fahmi	⬜ Todo
+GET /admin/dashboard/stats	Fahmi	⬜ Todo
+GET /admin/users — list + filter + search	Fahmi	⬜ Todo
+PATCH /admin/users/{id}/tier — manual upgrade/downgrade	Fahmi	⬜ Todo
+GET /admin/consents — consent log	Fahmi	⬜ Todo
+GET /admin/consents/export — CSV + PDF dengan SHA-256 hash untuk OJK	Fahmi	⬜ Todo
+GET /admin/revenue — MRR, ARR, churn, breakdown tier	Fahmi	⬜ Todo
+POST /admin/marketing/generate — AI content generator	Fahmi	⬜ Todo
+Admin audit log: catat semua action admin	Fahmi	⬜ Todo
+Super admin: hanya Fahmi, setup manual di DB	Fahmi	⬜ Todo
+
+Nasywa — Frontend & Mobile
+Deliverable	PIC	Status
+Halaman /admin — sidebar navigasi admin	Nasywa	⬜ Todo
+Dashboard: metric cards + chart MRR	Nasywa	⬜ Todo
+Halaman /admin/users — tabel + search + filter + detail modal	Nasywa	⬜ Todo
+Tombol manual ubah tier user	Nasywa	⬜ Todo
+Halaman /admin/consents — tabel log + filter by type	Nasywa	⬜ Todo
+Tombol export CSV/PDF consent log	Nasywa	⬜ Todo
+Halaman /admin/revenue — chart MRR + breakdown tier	Nasywa	⬜ Todo
+Halaman /admin/marketing — form input + hasil generate	Nasywa	⬜ Todo
+Admin layout berbeda dari user dashboard (dark + professional)	Nasywa	⬜ Todo
+
+5. OUT OF SCOPE
+⚠  Yang SENGAJA tidak dikerjakan siklus ini. Sudah ada di Backlog.
+•	CS dashboard untuk handle chat eskalasi — pakai tools eksternal dulu
+•	Marketing automation (auto-schedule) — Backlog
+•	A/B testing — Backlog
+•	Referral system — Backlog
+
+6. RABBIT HOLES
+⚠  Jebakan yang bisa menghabiskan waktu. Hindari!
+•	Dashboard analytics terlalu complex (cohort, funnel) — metric basic dulu
+•	Marketing AI dengan terlalu banyak format — 5-6 format paling berguna cukup
+•	Real-time dashboard dengan WebSocket — polling 1 menit sudah cukup
+
+7. NO-GOS
+❌  Hal yang sudah disepakati TIDAK akan dilakukan.
+•	TIDAK akan expose admin endpoint ke public — wajib ada role check
+•	TIDAK akan skip audit log untuk action admin
+•	TIDAK akan export consent tanpa SHA-256 hash — wajib untuk OJK
+
+8. API CONTRACT
+💡  Kontrak Fahmi <-> Nasywa. Nasywa bisa langsung mock dari sini.
+
+GET /api/v1/admin/dashboard/stats
+json
+// Auth: JWT required, Role: admin+
+
+// Response 200
+{
+  "success": true,
+  "data": {
+    "users": {
+      "total": 1250, "new_today": 12, "trial_active": 45,
+      "by_tier": { "lite": 870, "growth": 280, "apex": 100 }
+    },
+    "revenue": {
+      "mrr": 209000000, "arr": 2508000000,
+      "today": 4425000, "this_month": 209000000
+    },
+    "engagement": { "dau": 450, "mau": 980 }
+  }
+}
+
+POST /api/v1/admin/marketing/generate
+json
+// Auth: JWT required, Role: admin+
+
+// Request
+{
+  "format": "twitter",  // twitter|instagram|email_subject|push_copy|blog_intro
+  "topic":  "Fitur AI Score baru di Stoxify",
+  "target": "investor muda 25-35 tahun",
+  "tone":   "professional"  // professional|casual|urgent
+}
+
+// Response 200
+{
+  "success": true,
+  "data": {
+    "format": "twitter",
+    "generated": [
+      "AI Score 0-100 kini hadir. Tau kapan harus beli dan jual, backed by data. #Stoxify",
+      "Market penuh sinyal, tapi lo baca yang mana? AI Score Stoxify ngasih ranking objektif."
+    ]
+  }
+}
+
+9. DATABASE SCHEMA / MIGRATION
+❌  Wajib buat Alembic migration dulu sebelum coding endpoint.
+python — Alembic
+# Siklus 7: Admin tables
+
+op.create_table('admin_users',
+    sa.Column('id',         sa.UUID(),       primary_key=True, server_default=sa.text('gen_random_uuid()')),
+    sa.Column('user_id',    sa.UUID(),       sa.ForeignKey('users.id'), unique=True, nullable=False),
+    sa.Column('role',       sa.String(20),   nullable=False),
+    sa.Column('is_active',  sa.Boolean(),    server_default='TRUE'),
+    sa.Column('granted_by', sa.UUID(),       nullable=True),
+    sa.Column('granted_at', sa.TIMESTAMPTZ(),server_default=sa.text('NOW()')),
+)
+
+op.create_table('admin_audit_logs',
+    sa.Column('id',          sa.UUID(),       primary_key=True, server_default=sa.text('gen_random_uuid()')),
+    sa.Column('admin_id',    sa.UUID(),       sa.ForeignKey('admin_users.id'), nullable=False),
+    sa.Column('action',      sa.String(50),   nullable=False),
+    sa.Column('resource',    sa.String(50),   nullable=False),
+    sa.Column('resource_id', sa.String(100),  nullable=True),
+    sa.Column('old_value',   sa.JSONB(),      nullable=True),
+    sa.Column('new_value',   sa.JSONB(),      nullable=True),
+    sa.Column('ip_address',  sa.String(45),   nullable=True),
+    sa.Column('created_at',  sa.TIMESTAMPTZ(),server_default=sa.text('NOW()')),
+)
+
+10. CONTOH KODE UTAMA
+RBAC Dependency (Fahmi)
+python
+# app/core/dependencies.py
+
+ROLE_ORDER = {
+    "moderator":1, "content":2, "cs":3,
+    "marketing":4, "finance":5, "admin":6, "super_admin":7
+}
+
+def require_admin_role(min_role: str):
+    async def check(user=Depends(get_current_user), db=Depends(get_db)):
+        admin = await db.fetchrow(
+            "SELECT role FROM admin_users WHERE user_id=$1 AND is_active=TRUE", user.id
+        )
+        if not admin:
+            raise HTTPException(403, detail={"code":"NOT_ADMIN"})
+        if ROLE_ORDER.get(admin["role"], 0) < ROLE_ORDER.get(min_role, 999):
+            raise HTTPException(403, detail={"code":"INSUFFICIENT_ROLE"})
+        return user
+    return check
+
+# Penggunaan:
+# @router.get("/admin/users")
+# async def list_users(u=Depends(require_admin_role("admin"))):
+
+11. DEFINITION OF DONE
+❌  Siklus dianggap SELESAI hanya kalau SEMUA checklist ini hijau.
+
+Deliverable	PIC	Status
+Admin bisa login ke /admin dengan role check	Fahmi + Nasywa	⬜ Todo
+Dashboard stats menampilkan data real	Fahmi + Nasywa	⬜ Todo
+Consent log bisa diexport sebagai CSV dengan SHA-256 hash	Fahmi	⬜ Todo
+Manual ubah tier user berfungsi	Fahmi	⬜ Todo
+Audit log mencatat semua action admin	Fahmi	⬜ Todo
+Marketing AI generate konten minimal 5 format	Fahmi + Nasywa	⬜ Todo
+Semua /admin endpoint return 403 untuk non-admin	Fahmi	⬜ Todo
+
+12. CATATAN
+Admin dashboard untuk internal use. Tidak perlu terlalu fancy dari sisi UI — yang penting data akurat dan export consent bisa dipakai untuk audit OJK.
+
+13. APPROVAL
+❌  KEDUA co-founder harus approve sebelum build dimulai.
+
+Co-founder	Status
+Fahmi (Backend/ML Leader)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+Nasywa (Frontend/Mobile)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+
+Catatan revisi (isi kalau rejected):
+Tulis catatan di sini...
+SIKLUS 8
+Polish + Security Audit + Launch
+Big Batch — 3 minggu
+Field	Value
+Appetite	Big Batch — 3 minggu
+Mulai	[DD/MM/YYYY]
+Target Selesai	[DD/MM/YYYY]
+Jeda Setelah Siklus	2 minggu (post-launch buffer)
+
+1. PROBLEM
+ℹ  Product sudah feature-complete tapi belum siap untuk traffic nyata. Ada potensi security vulnerability, performance bottleneck, dan UX yang masih kasar. Tidak bisa launch kalau belum di-harden.
+
+2. SOLUTION
+Security audit menyeluruh (OWASP Top 10), performance optimization, load testing 100-500 concurrent user, UX polish dari user testing, dan public launch ke early adopter. Siklus ini tidak ada fitur baru sama sekali — fokus pada kualitas dan kesiapan.
+3. ALUR
+Flow
+Security Audit:
+  OWASP Top 10 checklist
+  Penetration testing: auth, payment, data access
+  Dependency vulnerability scan: pip-audit + npm audit
+  Security headers check
+
+Performance:
+  Load testing: 100 concurrent users, 500 concurrent users (Locust)
+  Database query optimization (EXPLAIN ANALYZE top 10 query terlambat)
+  Redis cache hit rate check (target > 90%)
+  Frontend Lighthouse score (target > 90)
+
+UX Polish:
+  User testing dengan 5-10 orang
+  Fix semua friction point yang ditemukan
+  Accessibility check (a11y)
+
+Launch:
+  Deploy ke stoxify.id + api.stoxify.id
+  Setup custom domain + SSL di Railway dan Vercel
+  Soft launch ke 10 early adopter
+  Monitor error rate di Sentry
+  Public launch kalau 48 jam soft launch berjalan lancar
+
+4. IN SCOPE
+💡  Ini yang PASTI dikerjakan siklus ini. Tidak ada coding sebelum Pitch diapprove.
+
+Fahmi — Backend & ML
+Deliverable	PIC	Status
+Security audit: cek semua endpoint auth, payment, admin (OWASP Top 10)	Fahmi	⬜ Todo
+pip-audit + update vulnerable packages	Fahmi	⬜ Todo
+Rate limiting tuning berdasarkan data real usage	Fahmi	⬜ Todo
+EXPLAIN ANALYZE untuk 10 query terlambat, tambah indeks jika perlu	Fahmi	⬜ Todo
+Redis cache hit rate monitoring (target > 90%)	Fahmi	⬜ Todo
+Load testing dengan Locust: 100 + 500 concurrent users	Fahmi	⬜ Todo
+Setup production domain: api.stoxify.id di Railway	Fahmi	⬜ Todo
+SSL certificate via Railway	Fahmi	⬜ Todo
+Environment variable audit: tidak ada dev creds di production	Fahmi	⬜ Todo
+Backup strategy: Supabase point-in-time recovery	Fahmi	⬜ Todo
+Sentry alert: error rate > 1% trigger alert ke WA Fahmi	Fahmi	⬜ Todo
+API SLA: dashboard < 500ms, chart < 300ms, AI < 3s	Fahmi	⬜ Todo
+
+Nasywa — Frontend & Mobile
+Deliverable	PIC	Status
+Lighthouse audit: target > 90 untuk Performance + Accessibility + SEO	Nasywa	⬜ Todo
+Fix semua console.error yang tersisa	Nasywa	⬜ Todo
+Keyboard navigation + screen reader compatibility	Nasywa	⬜ Todo
+User testing: 5 sesi dengan user berbeda, dokumentasi friction point	Nasywa	⬜ Todo
+Fix semua friction point dari user testing	Nasywa	⬜ Todo
+Test di iPhone SE (375px) dan Android low-end	Nasywa	⬜ Todo
+Loading state untuk semua fetch yang belum ada	Nasywa	⬜ Todo
+Error boundary: graceful error kalau API down	Nasywa	⬜ Todo
+Setup production domain: stoxify.id di Vercel	Nasywa	⬜ Todo
+OG tags dan meta description untuk SEO	Nasywa	⬜ Todo
+Favicon + PWA manifest	Nasywa	⬜ Todo
+Code splitting + lazy loading untuk performance	Nasywa	⬜ Todo
+
+5. OUT OF SCOPE
+⚠  Yang SENGAJA tidak dikerjakan siklus ini. Sudah ada di Backlog.
+•	Fitur baru apapun — ini siklus polish, BUKAN siklus fitur
+•	Refactor besar-besaran — bisa post-launch
+•	Mobile Flutter — post-launch
+•	Upgrade paid data source — setelah ada revenue
+
+6. RABBIT HOLES
+⚠  Jebakan yang bisa menghabiskan waktu. Hindari!
+•	"Sebentar lagi selesai nih" untuk fitur baru — TIDAK. Semua ke Backlog
+•	Perfectionism — done > perfect. Launch dulu, improve setelahnya
+•	Security yang terlalu paranoid — fix critical dan high dulu, medium bisa post-launch
+•	Refactor code yang ingin dibersihkan — bukan sekarang
+
+7. NO-GOS
+❌  Hal yang sudah disepakati TIDAK akan dilakukan.
+•	TIDAK akan launch tanpa security audit selesai
+•	TIDAK akan launch tanpa load test 100 concurrent user passed
+•	TIDAK akan launch tanpa consent flow verified
+•	TIDAK akan tambah fitur baru di siklus ini — apapun alasannya
+
+8. API CONTRACT
+💡  Kontrak Fahmi <-> Nasywa. Nasywa bisa langsung mock dari sini.
+
+GET /health — Health Check (sudah ada sejak Siklus 0)
+json
+// Public endpoint — dipanggil Railway health check
+
+// Response 200
+{
+  "status": "healthy",
+  "version": "1.0.0",
+  "timestamp": "2026-03-07T09:00:00Z",
+  "services": {
+    "database": "connected",
+    "redis":    "connected",
+    "groq":     "connected"
+  }
+}
+
+9. DATABASE SCHEMA / MIGRATION
+❌  Wajib buat Alembic migration dulu sebelum coding endpoint.
+python — Alembic
+# Siklus 8: Tidak ada tabel baru
+# Fokus pada indeks yang mungkin terlewat:
+
+op.create_index('idx_price_history_symbol_time',
+    'price_history', ['symbol', 'exchange', 'time']
+)
+op.create_index('idx_community_posts_created',
+    'community_posts', ['created_at'],
+    postgresql_where=sa.text('deleted_at IS NULL')
+)
+op.create_index('idx_users_email',
+    'users', ['email']
+)
+
+10. CONTOH KODE UTAMA
+Load Testing dengan Locust (Fahmi)
+python
+# tests/load/locustfile.py
+from locust import HttpUser, task, between
+
+class StoxifyUser(HttpUser):
+    wait_time = between(1, 3)
+    token = None
+
+    def on_start(self):
+        res = self.client.post("/api/v1/auth/login", json={
+            "email": "testuser@stoxify.id", "password": "testpassword123"
+        })
+        if res.status_code == 200:
+            self.token = res.json()["data"]["access_token"]
+
+    def auth_headers(self):
+        return {"Authorization": f"Bearer {self.token}"}
+
+    @task(3)
+    def market_overview(self):
+        self.client.get("/api/v1/market/overview", headers=self.auth_headers())
+
+    @task(2)
+    def hot_news(self):
+        self.client.get("/api/v1/news/hot", headers=self.auth_headers())
+
+    @task(2)
+    def portfolio(self):
+        self.client.get("/api/v1/portfolios", headers=self.auth_headers())
+
+    @task(1)
+    def asset_detail(self):
+        self.client.get("/api/v1/market/assets/BBCA?exchange=IDX", headers=self.auth_headers())
+
+# Run: locust -f tests/load/locustfile.py --headless -u 100 -r 10 --run-time 60s
+# Target: semua endpoint < 500ms di 100 concurrent users
+
+Error Boundary (Nasywa)
+typescript
+// src/components/ui/ErrorBoundary.tsx
+'use client'
+import { Component, ErrorInfo, ReactNode } from 'react'
+
+interface Props { children: ReactNode; fallback?: ReactNode }
+interface State { hasError: boolean }
+
+export class ErrorBoundary extends Component<Props, State> {
+  state: State = { hasError: false }
+  static getDerivedStateFromError(): State { return { hasError: true } }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("ErrorBoundary:", error, info)
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="flex items-center justify-center h-40">
+          <div className="text-center">
+            <p className="text-[#F87171] font-[Syne] font-bold mb-2">Terjadi kesalahan</p>
+            <button onClick={() => this.setState({ hasError: false })}
+              className="text-white/50 text-sm underline">Coba lagi</button>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
+11. DEFINITION OF DONE
+❌  Siklus dianggap SELESAI hanya kalau SEMUA checklist ini hijau.
+
+Deliverable	PIC	Status
+Security audit OWASP Top 10 — semua critical dan high fixed	Fahmi	⬜ Todo
+Load test 100 concurrent user passed — semua endpoint < SLA	Fahmi	⬜ Todo
+Lighthouse score > 90 Performance + Accessibility + SEO	Nasywa	⬜ Todo
+User testing 5 sesi selesai, friction point fixed	Nasywa	⬜ Todo
+Tidak ada console.error di production build	Nasywa	⬜ Todo
+SSL + security headers aktif di production	Fahmi	⬜ Todo
+Sentry monitoring aktif + alert ke WA Fahmi	Fahmi	⬜ Todo
+Backup Supabase dikonfigurasi	Fahmi	⬜ Todo
+stoxify.id + api.stoxify.id pointing ke production	Keduanya	⬜ Todo
+Soft launch ke 10 early adopter selesai, tidak ada critical bug	Keduanya	⬜ Todo
+
+12. CATATAN
+Kalau mendekati deadline masih ada yang belum selesai: Security > Load Test > Production Domain > Polish. Launch dengan yang ada. Done adalah better than perfect.
+
+13. APPROVAL
+❌  KEDUA co-founder harus approve sebelum build dimulai.
+
+Co-founder	Status
+Fahmi (Backend/ML Leader)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+Nasywa (Frontend/Mobile)	⬜ Pending   /   ✅ Approved   /   ❌ Rejected — tanggal: ___________
+
+Catatan revisi (isi kalau rejected):
+Tulis catatan di sini...
+
